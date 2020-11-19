@@ -1,3 +1,49 @@
 <ion-content>
+    <ion-list *ngIf="todoService.todos.length else empty">
+        <ion-list-header>
+            ToDos
+        </ion-list-header>
 
+        <ion-item-sliding>
+            <ion-item *ngFor="let todo of todoService.todos">
+                <ion-avatar slot="start">
+                    <!--<img alt="{{todo.autor.nutzername}}" src="{{todo.autor.profilbild}}">-->
+                </ion-avatar>
+
+                <ion-label>
+                    <h2>{{todo.titel}}</h2>
+                    <h4>{{todo.kategorie}}</h4>
+                    <p>{{todo.beschreibung}}</p>
+                </ion-label>
+                <ion-note slot="end">
+                    {{todo.zeit}} Uhr
+                </ion-note>
+            </ion-item>
+
+            <ion-item-options side="start">
+                <ion-item-option>
+                    <ion-icon slot="icon-only" name="heart"></ion-icon>
+                </ion-item-option>
+            </ion-item-options>
+
+            <ion-item-options side="end">
+                <ion-item-option color="danger">
+                    <ion-icon slot="icon-only" name="trash"></ion-icon>
+                </ion-item-option>
+                <ion-item-option>
+                    <ion-icon slot="icon-only" name="star"></ion-icon>
+                </ion-item-option>
+            </ion-item-options>
+        </ion-item-sliding>
+    </ion-list>
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="addModal()">
+            <ion-icon name="add-outline"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
 </ion-content>
+
+<ng-template #empty>
+    <p>Noch keine Einträge :(</p>
+</ng-template>

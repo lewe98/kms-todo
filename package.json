@@ -1,9 +1,10 @@
 {
   "name": "kms-todo",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "Hermanspahn, Leichner, Lorenzen",
+  "homepage": "https://git.thm.de/jhmn46/kms-todo",
   "scripts": {
+    "ion": "ionic serve",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
@@ -50,5 +51,5 @@
     "tslint": "~6.1.0",
     "typescript": "~3.9.5"
   },
-  "description": "An Ionic project"
+  "description": "A simple ToDo app"
 }
