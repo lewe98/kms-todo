@@ -27,5 +27,5 @@ export class HomePage {
         });
         return await modal.present();
     }
-
+    
 }
