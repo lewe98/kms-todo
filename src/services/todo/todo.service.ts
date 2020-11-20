@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Todo} from '../../models/todo';
 import {ModalController} from '@ionic/angular';
+import {User} from '../../models/user';
 
 @Injectable({
     providedIn: 'root'
@@ -11,9 +12,9 @@ export class TodoService {
     constructor(private modalCtrl: ModalController) {
     }
 
-    async add(todo: Todo) {
+    async add(todo: Todo, autor: User) {
         if (todo.titel && todo.beschreibung) {
-            // this.todo.autor.nutzername = await this.autor;
+            todo.autor = autor;
             todo.zeit = new Date().getHours() + ':' + new Date().getMinutes();
             await this.todos.push(todo);
             await this.modalCtrl.dismiss();
