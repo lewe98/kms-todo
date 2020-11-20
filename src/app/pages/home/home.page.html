@@ -1,4 +1,6 @@
 <ion-content>
+    <ion-button (click)="authService.logOut()">Logout</ion-button>
+
     <ion-list *ngIf="todoService.todos.length else empty">
         <ion-list-header>
             ToDos
@@ -7,7 +9,7 @@
         <ion-item-sliding>
             <ion-item *ngFor="let todo of todoService.todos">
                 <ion-avatar slot="start">
-                    <!--<img alt="{{todo.autor.nutzername}}" src="{{todo.autor.profilbild}}">-->
+                    <img alt="{{todo.autor.nutzername}}" src="{{todo.autor.profilbild}}">
                 </ion-avatar>
 
                 <ion-label>
@@ -16,7 +18,8 @@
                     <p>{{todo.beschreibung}}</p>
                 </ion-label>
                 <ion-note slot="end">
-                    {{todo.zeit}} Uhr
+                    {{todo.autor.nutzername}}
+                    <!--{{todo.zeit}} Uhr-->
                 </ion-note>
             </ion-item>
 
