@@ -1,15 +1,34 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>to schmu - for all the schmu you gotta do</ion-title>
+    </ion-toolbar>
+</ion-header>
 <ion-content>
     <ion-button (click)="authService.logOut()">Logout</ion-button>
 
-    <ion-list *ngIf="todoService.todos.length else empty">
+    <ion-list>
         <ion-list-header>
             ToDos
         </ion-list-header>
 
-        <ion-item-sliding>
+        <ng-template #empty>
+            <ion-item-sliding>
+                <ion-item>
+                    <p>Du hast ja noch gar nichts zu tun! Mach dich mal nützlich, Junge!</p>
+                    <ion-button (click)="addModal()" slot="end">
+                        <ion-icon name="add-outline"></ion-icon>
+                    </ion-button>
+                </ion-item>
+            </ion-item-sliding>
+        </ng-template>
+
+        <ion-item-sliding *ngIf="todoService.todos.length > 0 else empty">
             <ion-item *ngFor="let todo of todoService.todos">
                 <ion-avatar slot="start">
-                    <img alt="{{todo.autor.nutzername}}" src="{{todo.autor.profilbild}}">
+                    <!-- <img alt="{{todo.autor.nutzername}}" src="{{todo.autor.profilbild}}"> -->
                 </ion-avatar>
 
                 <ion-label>
@@ -18,26 +37,27 @@
                     <p>{{todo.beschreibung}}</p>
                 </ion-label>
                 <ion-note slot="end">
-                    {{todo.autor.nutzername}}
-                    <!--{{todo.zeit}} Uhr-->
+                    <!-- {{todo.autor.nutzername}} -->
+                    {{todo.zeit}} Uhr
                 </ion-note>
             </ion-item>
 
             <ion-item-options side="start">
                 <ion-item-option>
-                    <ion-icon slot="icon-only" name="heart"></ion-icon>
+                    <ion-icon slot="icon-only" name="star"></ion-icon>
                 </ion-item-option>
             </ion-item-options>
 
             <ion-item-options side="end">
                 <ion-item-option color="danger">
-                    <ion-icon slot="icon-only" name="trash"></ion-icon>
+                    <ion-icon slot="icon-only" name="create-outline"></ion-icon>
                 </ion-item-option>
                 <ion-item-option>
-                    <ion-icon slot="icon-only" name="star"></ion-icon>
+                    <ion-icon slot="icon-only" name="trash"></ion-icon>
                 </ion-item-option>
             </ion-item-options>
         </ion-item-sliding>
+
     </ion-list>
 
     <ion-fab vertical="bottom" horizontal="end" slot="fixed">
@@ -46,7 +66,3 @@
         </ion-fab-button>
     </ion-fab>
 </ion-content>
-
-<ng-template #empty>
-    <p>Noch keine Einträge :(</p>
-</ng-template>
