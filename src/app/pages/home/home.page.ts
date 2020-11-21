@@ -12,14 +12,16 @@ import {Router} from '@angular/router';
     styleUrls: ['./home.page.scss'],
 })
 export class HomePage {
+    isLoggedIn = false;
 
     constructor(private modalCtrl: ModalController,
                 private router: Router,
                 public todoService: TodoService,
                 public authService: AuthService) {
         if (!localStorage.getItem('userID')) {
-            this.router.navigate(['/login']);
+            this.isLoggedIn = false;
         } else {
+            this.isLoggedIn = true;
             authService.findById(localStorage.getItem('userID'))
                 .subscribe(u => {
                     authService.user = u;
