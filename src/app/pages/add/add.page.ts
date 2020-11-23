@@ -11,6 +11,7 @@ export class AddPage {
 
     @Input() todo: Todo;
     @Input() autor: string;
+    @Input() edit: boolean;
 
     constructor(public todoService: TodoService) {
     }

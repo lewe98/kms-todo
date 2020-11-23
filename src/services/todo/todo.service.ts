@@ -22,4 +22,12 @@ export class TodoService {
             alert('du hund');
         }
     }
+
+    async edit(todo: Todo) {
+        if (todo.titel && todo.beschreibung) {
+            this.todos.find(todoAusArray => todoAusArray.id === todo.id).titel = todo.titel;
+            this.todos.find(todoAusArray => todoAusArray.id === todo.id).beschreibung = todo.beschreibung;
+            await this.modalCtrl.dismiss();
+        }
+    }
 }
