@@ -8,6 +8,7 @@ import {User} from '../../models/user';
 })
 export class TodoService {
     todos: Todo[] = [];
+    erledigt: Todo[] = [];
 
     constructor(private modalCtrl: ModalController) {
     }
@@ -34,5 +35,15 @@ export class TodoService {
 
     async delete(todo: Todo) {
         this.todos.splice(todo.id, 1);
+    }
+
+    async done(todo: Todo) {
+        this.todos.splice(todo.id, 1);
+        this.erledigt.push(todo);
+    }
+
+    async notDone(todo: Todo) {
+        this.erledigt.splice(todo.id, 1);
+        this.todos.push(todo);
     }
 }
