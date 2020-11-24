@@ -2,7 +2,7 @@ import {Kategorie} from './kategorie';
 import {User} from './user';
 
 export class Todo {
-    public id: string;
+    public id: number;
     public titel: string;
     public beschreibung: string;
     public kategorie: Kategorie;

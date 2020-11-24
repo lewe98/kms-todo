@@ -10,8 +10,13 @@
         <ion-textarea [(ngModel)]="todo.beschreibung"></ion-textarea>
     </ion-item>
 
-    <ion-button (click)="todoService.add(todo, autor)">
+
+    <ion-button *ngIf="!edit" (click)="todoService.add(todo, autor)">
         <ion-icon name="add-outline"></ion-icon>
+    </ion-button>
+
+    <ion-button *ngIf="edit" (click)="todoService.edit(todo)">
+        Speichern
     </ion-button>
 
 </ion-content>
