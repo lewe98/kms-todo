@@ -28,7 +28,7 @@ export class TodoService {
         }
     }
 
-    async presentPopover(ev: any, toto: Todo) {
+    async presentPopoverPriority(ev: any, toto: Todo) {
         const popover = await this.popoverController.create({
             component: PopoverPriorityComponent,
             event: ev,

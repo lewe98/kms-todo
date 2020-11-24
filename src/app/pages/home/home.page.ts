@@ -12,6 +12,7 @@ import {Todo} from '../../../models/todo';
 })
 export class HomePage {
     isLoggedIn = false;
+    priority = ['nicht priorisiert', '!', '!!', '!!!'];
 
     constructor(private modalCtrl: ModalController,
                 public todoService: TodoService,
