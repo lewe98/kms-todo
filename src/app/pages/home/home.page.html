@@ -26,6 +26,7 @@
                         <h4>{{todo.kategorie}}</h4>
                         <p>{{todo.beschreibung}}</p>
                     </ion-label>
+                    <ion-badge (click)="todoService.presentPopoverPriority($event, todo)">{{priority[todo.prioritaet]}}</ion-badge>
                     <ion-note slot="end">
                         <!-- {{todo.autor.nutzername}} -->
                         {{todo.zeit}} Uhr

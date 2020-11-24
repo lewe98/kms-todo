@@ -8,6 +8,7 @@ export class Todo {
     public kategorie: Kategorie;
     public autor: User;
     public erledigt: boolean;
+    public prioritaet = 0;
     public zeit: string;
 
     /*constructor(titel: string, beschreibung: string, kategorie: Kategorie, autor: User) {
