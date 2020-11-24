@@ -14,6 +14,7 @@ export class TodoService {
 
     async add(todo: Todo, autor: User) {
         if (todo.titel && todo.beschreibung) {
+            todo.id = this.todos.length;
             todo.autor = autor;
             todo.zeit = new Date().getHours() + ':' + new Date().getMinutes();
             await this.todos.push(todo);
