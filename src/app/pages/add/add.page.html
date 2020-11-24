@@ -1,3 +1,19 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="end">
+            <ion-button (click)="modalCtrl.dismiss()">Abbrechen</ion-button>
+        </ion-buttons>
+
+        <ion-title *ngIf="!edit">
+            ToDo erstellen
+        </ion-title>
+
+        <ion-title *ngIf="edit">
+            ToDo bearbeiten
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
 <ion-content>
 
     <ion-item>
@@ -10,8 +26,13 @@
         <ion-textarea [(ngModel)]="todo.beschreibung"></ion-textarea>
     </ion-item>
 
-    <ion-button (click)="todoService.add(todo, autor)">
+
+    <ion-button *ngIf="!edit" (click)="todoService.add(todo, autor)">
         <ion-icon name="add-outline"></ion-icon>
+    </ion-button>
+
+    <ion-button *ngIf="edit" (click)="todoService.edit(todo)">
+        Speichern
     </ion-button>
 
 </ion-content>
