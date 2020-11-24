@@ -31,4 +31,8 @@ export class TodoService {
             await this.modalCtrl.dismiss();
         }
     }
+
+    async delete(todo: Todo) {
+        this.todos.splice(todo.id, 1);
+    }
 }

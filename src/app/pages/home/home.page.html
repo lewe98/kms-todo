@@ -7,7 +7,7 @@
     </ion-toolbar>
 </ion-header>
 <ion-content>
-    <ion-button (click)="authService.logOut()">Logout</ion-button>
+<!--    <ion-button (click)="authService.logOut()">Logout</ion-button>-->
 
     <ion-list>
         <ion-list-header>
@@ -53,7 +53,7 @@
                     <ion-item-option (click)="editModal(todo)" color="danger">
                         <ion-icon slot="icon-only" name="create-outline"></ion-icon>
                     </ion-item-option>
-                    <ion-item-option>
+                    <ion-item-option (click)="todoService.delete(todo)">
                         <ion-icon slot="icon-only" name="trash"></ion-icon>
                     </ion-item-option>
                 </ion-item-options>
