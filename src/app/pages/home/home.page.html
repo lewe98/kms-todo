@@ -7,23 +7,12 @@
     </ion-toolbar>
 </ion-header>
 <ion-content>
-<!--    <ion-button (click)="authService.logOut()">Logout</ion-button>-->
+    <!--    <ion-button (click)="authService.logOut()">Logout</ion-button>-->
 
     <ion-list>
         <ion-list-header>
             ToDos
         </ion-list-header>
-
-        <ng-template #empty>
-            <ion-item-sliding>
-                <ion-item>
-                    <p>Du hast ja noch gar nichts zu tun! Mach dich mal nützlich, Junge!</p>
-                    <ion-button (click)="addModal()" slot="end">
-                        <ion-icon name="add-outline"></ion-icon>
-                    </ion-button>
-                </ion-item>
-            </ion-item-sliding>
-        </ng-template>
 
         <div *ngIf="todoService.todos.length > 0 else empty">
             <ion-item-sliding *ngFor="let todo of todoService.todos">
@@ -47,6 +36,10 @@
                     <ion-item-option>
                         <ion-icon slot="icon-only" name="star"></ion-icon>
                     </ion-item-option>
+
+                    <ion-item-option (click)="todoService.done(todo)">
+                        <ion-icon name="checkmark-circle-outline"></ion-icon>
+                    </ion-item-option>
                 </ion-item-options>
 
                 <ion-item-options side="end">
@@ -62,9 +55,55 @@
 
     </ion-list>
 
+<br>
+
+    <ion-list>
+        <ion-list-header>
+            Erledigt
+        </ion-list-header>
+
+        <div *ngIf="todoService.erledigt.length > 0">
+            <ion-item-sliding *ngFor="let elem of todoService.erledigt">
+                <ion-item>
+                    <ion-avatar slot="start">
+                        <!-- <img alt="{{todo.autor.nutzername}}" src="{{todo.autor.profilbild}}"> -->
+                    </ion-avatar>
+
+                    <ion-label>
+                        <h2>{{elem.titel}}</h2>
+                        <h4>{{elem.kategorie}}</h4>
+                        <p>{{elem.beschreibung}}</p>
+                    </ion-label>
+                    <ion-note slot="end">
+                        <!-- {{todo.autor.nutzername}} -->
+                        {{elem.zeit}} Uhr
+                    </ion-note>
+                </ion-item>
+
+                <ion-item-options side="end">
+                    <ion-item-option color="danger" (click)="todoService.notDone(elem)">
+                        <ion-icon name="close-circle-outline"></ion-icon>
+                    </ion-item-option>
+                </ion-item-options>
+            </ion-item-sliding>
+        </div>
+
+    </ion-list>
+
     <ion-fab vertical="bottom" horizontal="end" slot="fixed">
         <ion-fab-button (click)="addModal()">
             <ion-icon name="add-outline"></ion-icon>
         </ion-fab-button>
     </ion-fab>
 </ion-content>
+
+<ng-template #empty>
+    <ion-item-sliding>
+        <ion-item>
+            <p>Hier klicken, um ToDo hinzuzufügen.</p>
+            <ion-button (click)="addModal()" slot="end">
+                <ion-icon name="add-outline"></ion-icon>
+            </ion-button>
+        </ion-item>
+    </ion-item-sliding>
+</ng-template>
