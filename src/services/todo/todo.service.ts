@@ -2,9 +2,8 @@ import {Injectable} from '@angular/core';
 import {Todo} from '../../models/todo';
 import {ModalController, PopoverController} from '@ionic/angular';
 import {User} from '../../models/user';
-import {AuthService} from '../auth/auth.service';
 import {PopoverPriorityComponent} from '../../app/components/popover-priority/popover-priority.component';
-import {kategorie} from "../../models/kategorie";
+import {kategorie} from '../../models/kategorie';
 
 
 @Injectable({
@@ -34,11 +33,10 @@ export class TodoService {
     /**
      * Reads FrontEnd form and creates new category, then
      * adds a category to the array categories in todoService
-     * @param name
+     * @param name name of the category
      */
-
     async addCategory(name: string) {
-        if (name.length != 0) {
+        if (name.length !== 0) {
             const id: string = (this.categories.length + 1).toString();
             console.log(this.categories);
             console.log(id);
