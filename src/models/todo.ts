@@ -1,11 +1,11 @@
-import {Kategorie} from './kategorie';
+import {kategorie} from './kategorie';
 import {User} from './user';
 
 export class Todo {
     public id: number;
     public titel: string;
     public beschreibung: string;
-    public kategorie: Kategorie;
+    public kategorie: kategorie;
     public autor: User;
     public erledigt: boolean;
     public prioritaet = 0;

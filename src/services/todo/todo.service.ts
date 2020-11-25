@@ -4,6 +4,8 @@ import {ModalController, PopoverController} from '@ionic/angular';
 import {User} from '../../models/user';
 import {AuthService} from '../auth/auth.service';
 import {PopoverPriorityComponent} from '../../app/components/popover-priority/popover-priority.component';
+import {kategorie} from "../../models/kategorie";
+
 
 @Injectable({
     providedIn: 'root'
@@ -11,6 +13,7 @@ import {PopoverPriorityComponent} from '../../app/components/popover-priority/po
 export class TodoService {
     todos: Todo[] = [];
     erledigt: Todo[] = [];
+    categories: kategorie[] = [];
 
     constructor(private modalCtrl: ModalController,
                 public popoverController: PopoverController) {
@@ -25,6 +28,24 @@ export class TodoService {
             await this.modalCtrl.dismiss();
         } else {
             alert('du hund');
+        }
+    }
+
+    /**
+     * Reads FrontEnd form and creates new category, then
+     * adds a category to the array categories in todoService
+     * @param name
+     */
+
+    async addCategory(name: string) {
+        if (name.length != 0) {
+            const id: string = (this.categories.length + 1).toString();
+            console.log(this.categories);
+            console.log(id);
+            await this.categories.push(new kategorie((this.categories.length + 1).toString(), name));
+            await this.modalCtrl.dismiss();
+        } else {
+            alert('Please enter a valid category name. ');
         }
     }
 
