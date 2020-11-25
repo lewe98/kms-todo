@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Todo} from '../../models/todo';
-import {ModalController, PopoverController} from '@ionic/angular';
+import {LoadingController, ModalController, PopoverController} from '@ionic/angular';
 import {User} from '../../models/user';
 import {PopoverPriorityComponent} from '../../app/components/popover-priority/popover-priority.component';
 import {kategorie} from '../../models/kategorie';

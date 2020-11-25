@@ -4,6 +4,7 @@ import {AddPage} from '../add/add.page';
 import {AuthService} from '../../../services/auth/auth.service';
 import {TodoService} from '../../../services/todo/todo.service';
 import {Todo} from '../../../models/todo';
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'app-home',
@@ -11,20 +12,18 @@ import {Todo} from '../../../models/todo';
     styleUrls: ['./home.page.scss'],
 })
 export class HomePage {
-    isLoggedIn = false;
     priority = ['nicht priorisiert', '!', '!!', '!!!'];
 
     constructor(private modalCtrl: ModalController,
+                private router: Router,
                 public todoService: TodoService,
                 public authService: AuthService) {
         if (!localStorage.getItem('userID')) {
-            this.isLoggedIn = false;
+            this.router.navigate(['/login']);
         } else {
-            this.isLoggedIn = true;
             authService.findById(localStorage.getItem('userID'))
                 .subscribe(u => {
                     authService.user = u;
-                    alert(authService.user.nutzername);
                 });
         }
     }

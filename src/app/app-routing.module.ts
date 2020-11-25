@@ -8,21 +8,21 @@ const routes: Routes = [
     },
     {
         path: '',
-        redirectTo: 'home',
+        redirectTo: 'landing',
         pathMatch: 'full'
     },
     {
-        path: 'add',
-        loadChildren: () => import('./pages/add/add.module').then(m => m.AddPageModule)
+        path: 'login',
+        loadChildren: () => import('./pages/auth/login/login.module').then(m => m.LoginPageModule)
     },
-  {
-    path: 'login',
-    loadChildren: () => import('./pages/auth/login/login.module').then( m => m.LoginPageModule)
-  },
-  {
-    path: 'register',
-    loadChildren: () => import('./pages/auth/register/register.module').then( m => m.RegisterPageModule)
-  }
+    {
+        path: 'registrierung',
+        loadChildren: () => import('./pages/auth/register/register.module').then(m => m.RegisterPageModule)
+    },
+    {
+        path: 'landing',
+        loadChildren: () => import('./pages/landing/landing.module').then(m => m.LandingPageModule)
+    }
 ];
 
 @NgModule({
