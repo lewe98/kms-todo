@@ -84,8 +84,10 @@ export class TodoService {
     }
 
     async done(todo: Todo) {
-        this.todos.splice(todo.id, 1);
-        this.erledigt.push(todo);
+        this.todos[todo.id].erledigt = true;
+        console.log(this.todos[todo.id].erledigt);
+        // this.todos.splice(todo.id, 1);
+        // this.erledigt.push(todo);
     }
 
     async notDone(todo: Todo) {
