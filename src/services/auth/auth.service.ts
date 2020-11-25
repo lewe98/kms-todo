@@ -5,6 +5,7 @@ import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firest
 import {Router} from '@angular/router';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {map} from 'rxjs/operators';
+import {LoadingController} from '@ionic/angular';
 
 @Injectable({
     providedIn: 'root'
@@ -14,12 +15,16 @@ export class AuthService {
     user: User;
     subUser: Subscription;
     userCollection: AngularFirestoreCollection<User>;
+    loading = this.loadingController.create({
+        message: 'Bitte warten...',
+        duration: 1500
+    });
 
     constructor(private router: Router,
                 private afs: AngularFirestore,
-                private afAuth: AngularFireAuth) {
+                private afAuth: AngularFireAuth,
+                public loadingController: LoadingController) {
         this.userCollection = afs.collection<User>('users');
-
     }
 
     /**
@@ -76,6 +81,7 @@ export class AuthService {
      * @param passwort user's password
      */
     async signUp(nutzername: string, email: string, passwort: string) {
+        await (await this.loading).present();
         await this.afAuth.createUserWithEmailAndPassword(email, passwort)
             .then(async res => {
                 this.persist(new User(email, nutzername, res.user.photoURL), res.user.uid);
@@ -89,6 +95,7 @@ export class AuthService {
             .catch((error) => {
                 alert(error);
             });
+        await (await this.loading).onDidDismiss();
     }
 
     /**
@@ -97,6 +104,7 @@ export class AuthService {
      * @param password user's password
      */
     async signIn(email: string, password: string) {
+        await (await this.loading).present();
         await this.afAuth.signInWithEmailAndPassword(email, password)
             .then(res => {
                 localStorage.setItem('userID', res.user.uid);
@@ -108,6 +116,7 @@ export class AuthService {
             .catch((error) => {
                 alert(error);
             });
+        await (await this.loading).onDidDismiss();
     }
 
     /**

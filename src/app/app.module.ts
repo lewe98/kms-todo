@@ -13,9 +13,10 @@ import {AngularFireModule} from '@angular/fire';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
 import {AngularFireAuthModule} from '@angular/fire/auth';
 import {environment} from '../environments/environment';
+import {PopoverPriorityComponent} from './components/popover-priority/popover-priority.component';
 
 @NgModule({
-    declarations: [AppComponent],
+    declarations: [AppComponent, PopoverPriorityComponent],
     entryComponents: [],
     imports: [
         BrowserModule,

@@ -1,17 +1,15 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {TodoService} from '../../../services/todo/todo.service';
+import {Component, Input} from '@angular/core';
 import {Todo} from '../../../models/todo';
 
 @Component({
-  selector: 'app-popover-priority',
-  templateUrl: './popover-priority.component.html',
-  styleUrls: ['./popover-priority.component.scss'],
+    selector: 'app-popover-priority',
+    templateUrl: './popover-priority.component.html',
+    styleUrls: ['./popover-priority.component.scss'],
 })
-export class PopoverPriorityComponent implements OnInit {
-  @Input() toto: Todo;
+export class PopoverPriorityComponent {
+    @Input() toto: Todo;
 
-  constructor(public todoService: TodoService) { }
-
-  ngOnInit() {}
+    constructor() {
+    }
 
 }
