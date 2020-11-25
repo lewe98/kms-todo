@@ -34,7 +34,7 @@ export class TodoService {
     /**
      * Reads FrontEnd form and creates new category, then
      * adds a category to the array categories in todoService
-     * @param name
+     * @param name name
      */
 
     async addCategory(name: string) {
