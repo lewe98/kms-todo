@@ -1,4 +1,9 @@
-export class Kategorie {
+export class kategorie {
     public id: string;
-    public bezeichnung: string;
+    public name: string;
+
+    constructor(id: string, name: string) {
+        this.id = id;
+        this.name = name;
+    }
 }

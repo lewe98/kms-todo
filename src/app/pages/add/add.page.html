@@ -16,23 +16,61 @@
 
 <ion-content>
 
-    <ion-item>
-        <ion-label>ToDo</ion-label>
-        <ion-input type="text" [(ngModel)]="todo.titel"></ion-input>
-    </ion-item>
+    <!------------------------------------------------------------------------------------>
+    <!--- Segment Button to toggle ngSwitch between adding a task and adding a category -->
+    <!------------------------------------------------------------------------------------>
 
-    <ion-item>
-        <ion-label>Beschreibung</ion-label>
-        <ion-textarea [(ngModel)]="todo.beschreibung"></ion-textarea>
-    </ion-item>
+    <ion-row class="ion-justify-content-center">
+        <ion-segment (ionChange)="segmentChanged($event)" [(ngModel)]="picked">
+            <ion-segment-button value="todo">
+                <ion-label>ToDo</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="category">
+                <ion-label>Category</ion-label>
+            </ion-segment-button>
+        </ion-segment>
+    </ion-row>
 
+    <!------------------------------------------------------------------------------------>
+    <!----------------------------- ngSwitch case to add a task -------------------------->
+    <!------------------------------------------------------------------------------------>
 
-    <ion-button *ngIf="!edit" (click)="todoService.add(todo, autor)">
-        <ion-icon name="add-outline"></ion-icon>
-    </ion-button>
+    <div [ngSwitch]="picked">
+        <div *ngSwitchCase="'todo'">
+            <ion-item>
+                <ion-label position="floating">ToDo</ion-label>
+                <ion-input type="text" [(ngModel)]="todo.titel"></ion-input>
+            </ion-item>
 
-    <ion-button *ngIf="edit" (click)="todoService.edit(todo)">
-        Speichern
-    </ion-button>
+            <ion-item>
+                <ion-label position="floating">Beschreibung</ion-label>
+                <ion-textarea [(ngModel)]="todo.beschreibung"></ion-textarea>
+            </ion-item>
+
+            <ion-button *ngIf="!edit" (click)="todoService.add(todo, autor)">
+                <ion-icon name="add-outline"></ion-icon>
+            </ion-button>
+
+            <ion-button *ngIf="edit" (click)="todoService.edit(todo)">
+                Speichern
+            </ion-button>
+        </div>
+
+        <!------------------------------------------------------------------------------------>
+        <!--------------------------- ngSwitch case to add a category ------------------------>
+        <!------------------------------------------------------------------------------------>
+
+        <div *ngSwitchCase="'category'">
+
+            <ion-item>
+                <ion-label position="floating">Enter a Category Name here</ion-label>
+                <ion-input type="text" [(ngModel)]="name"></ion-input>
+            </ion-item>
+
+            <ion-button *ngIf="!edit" (click)="todoService.addCategory(name)">
+                Save
+            </ion-button>
+        </div>
+    </div>
 
 </ion-content>
