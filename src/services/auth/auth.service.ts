@@ -6,10 +6,7 @@ import {Router} from '@angular/router';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {map} from 'rxjs/operators';
 import {LoadingController, PopoverController} from '@ionic/angular';
-import {Todo} from '../../models/todo';
-import {PopoverPriorityComponent} from '../../app/components/popover-priority/popover-priority.component';
 import {LoginPage} from '../../app/pages/auth/login/login.page';
-import {TodoService} from '../todo/todo.service';
 
 @Injectable({
     providedIn: 'root'
