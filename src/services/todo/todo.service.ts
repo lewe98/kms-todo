@@ -4,6 +4,8 @@ import {LoadingController, ModalController, PopoverController} from '@ionic/angu
 import {User} from '../../models/user';
 import {PopoverPriorityComponent} from '../../app/components/popover-priority/popover-priority.component';
 import {kategorie} from '../../models/kategorie';
+import {AuthService} from '../auth/auth.service';
+import {StorageServiceService} from '../storage/storage-service.service';
 
 
 @Injectable({
@@ -11,19 +13,25 @@ import {kategorie} from '../../models/kategorie';
 })
 export class TodoService {
     todos: Todo[] = [];
-    erledigt: Todo[] = [];
     categories: kategorie[] = [];
 
     constructor(private modalCtrl: ModalController,
-                public popoverController: PopoverController) {
+                public popoverController: PopoverController,
+                public storageService: StorageServiceService) {
+        this.todos = this.storageService.getTodos();
     }
 
     async add(todo: Todo, autor: User) {
         if (todo.titel && todo.beschreibung) {
             todo.id = this.todos.length;
             todo.autor = autor;
-            todo.zeit = new Date().getHours() + ':' + new Date().getMinutes();
+            let minute = String(new Date().getMinutes());
+            if (minute.length === 1) {
+                minute = '0' + minute;
+            }
+            todo.zeit = new Date().getHours() + ':' + minute;
             await this.todos.push(todo);
+            this.storageService.addTodo(todo);
             await this.modalCtrl.dismiss();
         } else {
             alert('du hund');
@@ -68,27 +76,30 @@ export class TodoService {
         const index = this.todos.indexOf(toto);
         toto.prioritaet = i;
         this.todos[index] = toto;
-        // TODO: Update Todo in Firebase
+        this.storageService.updateTodo(toto);
     }
 
     async edit(todo: Todo) {
         if (todo.titel && todo.beschreibung) {
             this.todos.find(todoAusArray => todoAusArray.id === todo.id).titel = todo.titel;
             this.todos.find(todoAusArray => todoAusArray.id === todo.id).beschreibung = todo.beschreibung;
+            this.storageService.updateTodo(todo);
             await this.modalCtrl.dismiss();
         }
     }
 
     async delete(todo: Todo) {
-        this.todos.splice(todo.id, 1);
+        this.todos.splice(this.todos.indexOf(todo), 1);
+        this.storageService.deleteTodo(todo);
     }
 
     async done(todo: Todo) {
-        this.todos[todo.id].erledigt = true;
+        this.todos[this.todos.indexOf(todo)].erledigt = true;
+        this.storageService.updateTodo(todo);
     }
 
     async notDone(todo: Todo) {
-        this.erledigt.splice(todo.id, 1);
-        this.todos.push(todo);
+        this.todos[this.todos.indexOf(todo)].erledigt = false;
+        this.storageService.updateTodo(todo);
     }
 }

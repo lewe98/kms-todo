@@ -3,11 +3,13 @@
         <ion-buttons slot="start">
             <ion-back-button></ion-back-button>
         </ion-buttons>
-        <ion-title>to schmu - for all the schmu you gotta do</ion-title>
+        <ion-title>Aufgaben Manager KMS</ion-title>
+        <ion-button *ngIf="authService.isLoggedIn" slot="end" (click)="authService.logOut()">Logout</ion-button>
+        <ion-button *ngIf="!authService.isLoggedIn" slot="end" (click)="authService.presentPopoverLogin($event)">Login</ion-button>
     </ion-toolbar>
 </ion-header>
 <ion-content>
-    <ion-button (click)="authService.logOut()">Logout</ion-button>
+
 
     <ion-list>
         <ion-list-header>
@@ -32,7 +34,7 @@
                         <!-- {{todo.autor.nutzername}} -->
                         {{todo.zeit}} Uhr
                     </ion-note>
-                    
+
                     <ion-badge slot="start" color="none" (click)="todoService.presentPopoverPriority($event, todo)">
                         <img [src]=priority[todo.prioritaet] alt="prio icon">
                     </ion-badge>

@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import {IonInput, ViewDidEnter} from '@ionic/angular';
+import {IonInput, PopoverController, ViewDidEnter} from '@ionic/angular';
 import {AuthService} from '../../../../services/auth/auth.service';
 import {Router} from '@angular/router';
 
@@ -17,10 +17,15 @@ export class LoginPage implements ViewDidEnter {
     private emailRef: IonInput;
 
     constructor(private authService: AuthService,
-                private router: Router) {
+                private router: Router,
+                private popoverController: PopoverController) {
         if (localStorage.getItem('userID')) {
             this.router.navigate(['/home']);
         }
+    }
+
+    async dismissClickPopover() {
+        await this.popoverController.dismiss();
     }
 
     /**
@@ -30,6 +35,7 @@ export class LoginPage implements ViewDidEnter {
      */
     async login(email: string, password: string) {
         this.errors.clear();
+        await this.dismissClickPopover();
         await this.authService.signIn(email, password)
             .then(() => {
                 this.router.navigate(['/home']);

@@ -5,13 +5,17 @@ import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firest
 import {Router} from '@angular/router';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {map} from 'rxjs/operators';
-import {LoadingController} from '@ionic/angular';
+import {LoadingController, PopoverController} from '@ionic/angular';
+import {Todo} from '../../models/todo';
+import {PopoverPriorityComponent} from '../../app/components/popover-priority/popover-priority.component';
+import {LoginPage} from '../../app/pages/auth/login/login.page';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
 
+    isLoggedIn = false;
     user: User;
     subUser: Subscription;
     userCollection: AngularFirestoreCollection<User>;
@@ -23,7 +27,8 @@ export class AuthService {
     constructor(private router: Router,
                 private afs: AngularFirestore,
                 private afAuth: AngularFireAuth,
-                public loadingController: LoadingController) {
+                public loadingController: LoadingController,
+                public popoverController: PopoverController) {
         this.userCollection = afs.collection<User>('users');
     }
 
@@ -39,6 +44,16 @@ export class AuthService {
         copy.profilbild = copy.profilbild || null;
 
         return copy;
+    }
+
+    async presentPopoverLogin(ev: any) {
+        const popover = await this.popoverController.create({
+            component: LoginPage,
+            event: ev,
+            translucent: true,
+            componentProps: {}
+        });
+        return await popover.present();
     }
 
     /**
@@ -88,6 +103,7 @@ export class AuthService {
                 this.subUser = this.findById(res.user.uid)
                     .subscribe(u => {
                         this.user = u;
+                        this.isLoggedIn = true;
                     });
                 localStorage.setItem('userID', res.user.uid);
                 await this.router.navigate(['/home']);
@@ -111,6 +127,7 @@ export class AuthService {
                 this.subUser = this.findById(res.user.uid)
                     .subscribe(u => {
                         this.user = u;
+                        this.isLoggedIn = true;
                     });
             })
             .catch((error) => {
@@ -129,6 +146,6 @@ export class AuthService {
         this.user = undefined;
         localStorage.clear();
         await this.afAuth.signOut();
-        await this.router.navigate(['/login']);
+        this.isLoggedIn = false;
     }
 }

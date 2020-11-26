@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {ModalController} from '@ionic/angular';
+import {ModalController, PopoverController} from '@ionic/angular';
 import {AddPage} from '../add/add.page';
 import {AuthService} from '../../../services/auth/auth.service';
 import {TodoService} from '../../../services/todo/todo.service';
@@ -24,11 +24,13 @@ export class HomePage {
                 public todoService: TodoService,
                 public authService: AuthService) {
         if (!localStorage.getItem('userID')) {
-            this.router.navigate(['/login']);
+            this.authService.isLoggedIn = false;
+            // this.router.navigate(['/login']);
         } else {
             authService.findById(localStorage.getItem('userID'))
                 .subscribe(u => {
                     authService.user = u;
+                    this.authService.isLoggedIn = true;
                 });
         }
     }
