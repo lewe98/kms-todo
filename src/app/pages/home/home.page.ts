@@ -5,6 +5,7 @@ import {AuthService} from '../../../services/auth/auth.service';
 import {TodoService} from '../../../services/todo/todo.service';
 import {Todo} from '../../../models/todo';
 import {Router} from '@angular/router';
+import {StorageServiceService} from '../../../services/storage/storage-service.service';
 
 @Component({
     selector: 'app-home',
@@ -22,7 +23,8 @@ export class HomePage {
     constructor(private modalCtrl: ModalController,
                 private router: Router,
                 public todoService: TodoService,
-                public authService: AuthService) {
+                public authService: AuthService,
+                public storageService: StorageServiceService) {
         if (!localStorage.getItem('userID')) {
             this.authService.isLoggedIn = false;
             // this.router.navigate(['/login']);
@@ -31,6 +33,7 @@ export class HomePage {
                 .subscribe(u => {
                     authService.user = u;
                     this.authService.isLoggedIn = true;
+                    this.todoService.todos = this.storageService.getTodos();
                 });
         }
     }

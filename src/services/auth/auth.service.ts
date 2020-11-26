@@ -42,7 +42,7 @@ export class AuthService {
 
         copy.nutzername = copy.nutzername || null;
         copy.profilbild = copy.profilbild || null;
-        copy.todos = copy.todos || null;
+        copy.todos = copy.todos || [];
         copy.kategorien = copy.kategorien || null;
 
         return copy;

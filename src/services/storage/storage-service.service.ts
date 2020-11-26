@@ -8,6 +8,21 @@ import {Todo} from '../../models/todo';
 export class StorageServiceService {
   constructor(private authService: AuthService) {}
 
+  static parsObjectArrayToString<T>(object: T[]): string[] {
+    const back = [];
+    object.map(e => {
+      back.push(JSON.stringify(e));
+    });
+    return back;
+  }
+
+  static parsStringToObjectArray<T>(object: string[]): T[] {
+    const back: T[] = [];
+    object.map(e => {
+      back.push(JSON.parse(e));
+    });
+    return back;
+  }
 
   getTodos(): Todo[] {
     if (this.authService.isLoggedIn) {
@@ -86,28 +101,31 @@ export class StorageServiceService {
    */
 
   private getTodosFirebase(): Todo[] {
-    return this.authService.getUser().todos;
+      return StorageServiceService.parsStringToObjectArray<Todo>(this.authService.getUser().todos);
   }
   private addTodoFirebase(todo: Todo) {
     const user = this.authService.getUser();
-    user.todos.push(todo);
+    user.todos.push(JSON.stringify(todo));
     this.authService.updateUser(user);
   }
   private updateTodoFirebase(todo: Todo) {
     const user = this.authService.getUser();
-    const todos = user.todos;
-    user.todos = todos.map( t => {
-      if (t.id === todo.id) {
-        return t = todo;
-      } else {
-        return t;
-      }
-    });
+    const todos = StorageServiceService.parsStringToObjectArray<Todo>(user.todos);
+    user.todos = StorageServiceService.parsObjectArrayToString<Todo>(
+        todos.map(t => {
+            if (t.id === todo.id) {
+                return t = todo;
+            } else {
+                return t;
+            }
+        })
+    );
     this.authService.updateUser(user);
   }
   private deleteTodoFirebase(todo: Todo) {
     const user = this.authService.getUser();
-    user.todos.splice(user.todos.indexOf(todo), 1);
+    user.todos.splice(user.todos.indexOf(JSON.stringify(todo)), 1);
     this.authService.updateUser(user);
   }
+
 }

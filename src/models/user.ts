@@ -6,8 +6,8 @@ export class User {
     public email: string;
     public nutzername: string;
     public profilbild: string;
-    public todos: Todo[];
-    public kategorien: kategorie;
+    public todos: string[];
+    public kategorien: string[];
 
     constructor(email: string, nutzername: string, profilbild: string) {
         this.email = email;
