@@ -23,10 +23,11 @@
 
                     <ion-label>
                         <h2 [class.done]="todo.erledigt">{{todo.titel}}</h2>
-                        <h4>{{todo.kategorie}}</h4>
+<!--                        <h4>{{todo.kategorie}}</h4>-->
                         <p>{{todo.beschreibung}}</p>
                     </ion-label>
-<!--                    <ion-badge (click)="todoService.presentPopoverPriority($event, todo)">{{priority[todo.prioritaet]}}</ion-badge>-->
+
+                    <ion-badge (click)="todoService.presentPopoverCategory($event, todo)">{{todo.kategorie.name}}</ion-badge>
 
                     <ion-note slot="end">
                         <!-- {{todo.autor.nutzername}} -->
