@@ -9,6 +9,7 @@ import {LoadingController, PopoverController} from '@ionic/angular';
 import {Todo} from '../../models/todo';
 import {PopoverPriorityComponent} from '../../app/components/popover-priority/popover-priority.component';
 import {LoginPage} from '../../app/pages/auth/login/login.page';
+import {TodoService} from '../todo/todo.service';
 
 @Injectable({
     providedIn: 'root'
@@ -127,9 +128,8 @@ export class AuthService {
             .then(res => {
                 localStorage.setItem('userID', res.user.uid);
                 this.subUser = this.findById(res.user.uid)
-                    .subscribe(u => {
+                    .subscribe(async u => {
                         this.user = u;
-                        this.isLoggedIn = true;
                     });
             })
             .catch((error) => {
@@ -148,7 +148,9 @@ export class AuthService {
         this.user = undefined;
         localStorage.clear();
         await this.afAuth.signOut();
-        this.isLoggedIn = false;
+        setTimeout(() => {
+            this.isLoggedIn = false;
+        }, 800);
     }
 
     /**

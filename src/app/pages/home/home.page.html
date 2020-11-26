@@ -4,7 +4,7 @@
             <ion-back-button></ion-back-button>
         </ion-buttons>
         <ion-title>Aufgaben Manager KMS</ion-title>
-        <ion-button *ngIf="authService.isLoggedIn" slot="end" (click)="authService.logOut()">Logout</ion-button>
+        <ion-button *ngIf="authService.isLoggedIn" slot="end" (click)="logout()">Logout</ion-button>
         <ion-button *ngIf="!authService.isLoggedIn" slot="end" (click)="authService.presentPopoverLogin($event)">Login</ion-button>
     </ion-toolbar>
 </ion-header>

@@ -24,6 +24,10 @@ export class StorageServiceService {
     return back;
   }
 
+    /***
+     * CRUD - Todos
+     */
+
   getTodos(): Todo[] {
     if (this.authService.isLoggedIn) {
       return this.getTodosFirebase();
@@ -99,6 +103,11 @@ export class StorageServiceService {
   /***
    * Firabase
    */
+  importToFirebase(todos: Todo[]) {
+      todos.forEach(todo => {
+          this.addTodoFirebase(todo);
+      });
+  }
 
   private getTodosFirebase(): Todo[] {
       return StorageServiceService.parsStringToObjectArray<Todo>(this.authService.getUser().todos);

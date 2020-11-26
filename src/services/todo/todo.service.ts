@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Todo} from '../../models/todo';
-import {LoadingController, ModalController, PopoverController} from '@ionic/angular';
+import {AlertController, LoadingController, ModalController, PopoverController} from '@ionic/angular';
 import {User} from '../../models/user';
 import {PopoverPriorityComponent} from '../../app/components/popover-priority/popover-priority.component';
 import {kategorie} from '../../models/kategorie';
@@ -16,10 +16,20 @@ export class TodoService {
     todos: Todo[] = [];
     categories: kategorie[] = [];
     catname = '';
+    loading = this.loadingController.create({
+        message: 'Bitte warten...',
+        duration: 1500
+    });
 
     constructor(private modalCtrl: ModalController,
                 public popoverController: PopoverController,
-                public storageService: StorageServiceService) {
+                public storageService: StorageServiceService,
+                public alertController: AlertController,
+                public loadingController: LoadingController) {
+        this.refreshTodos();
+    }
+
+    refreshTodos() {
         this.todos = this.storageService.getTodos();
     }
 
@@ -150,5 +160,35 @@ export class TodoService {
     async notDone(todo: Todo) {
         this.todos[this.todos.indexOf(todo)].erledigt = false;
         this.storageService.updateTodo(todo);
+    }
+
+    async presentAlertImportTodos() {
+        if (localStorage.getItem('todos')) {
+        const alert = await this.alertController.create({
+            header: 'Todos übernehmen?',
+            message: 'Möchten sie die erstellten Todos in ihr Profil übernehmen.<br>Falls nicht werden sie <strong>gelöscht</strong>.',
+            buttons: [
+                {
+                    text: 'Löschen',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                    handler: (blah) => {
+                        localStorage.removeItem('todos');
+                    }
+                }, {
+                    text: 'Übernehmen',
+                    handler: async () => {
+                        await (await this.loading).present();
+                        const tmpTodo: Todo[] = JSON.parse(localStorage.getItem('todos'));
+                        localStorage.removeItem('todos');
+                        this.storageService.importToFirebase(tmpTodo);
+                        await (await this.loading).onDidDismiss();
+                        this.todos = this.storageService.getTodos();
+                    }
+                }
+            ]
+        });
+        await alert.present();
+        }
     }
 }

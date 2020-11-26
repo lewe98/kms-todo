@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {ModalController, PopoverController} from '@ionic/angular';
+import {LoadingController, ModalController, PopoverController} from '@ionic/angular';
 import {AddPage} from '../add/add.page';
 import {AuthService} from '../../../services/auth/auth.service';
 import {TodoService} from '../../../services/todo/todo.service';
@@ -13,6 +13,10 @@ import {StorageServiceService} from '../../../services/storage/storage-service.s
     styleUrls: ['./home.page.scss'],
 })
 export class HomePage {
+    loading = this.loadingController.create({
+        message: 'Bitte warten...',
+        duration: 1500
+    });
     priority = [
         '../../../assets/prio/highest-prio.svg',
         '../../../assets/prio/high-prio.svg',
@@ -22,6 +26,7 @@ export class HomePage {
 
     constructor(private modalCtrl: ModalController,
                 private router: Router,
+                public loadingController: LoadingController,
                 public todoService: TodoService,
                 public authService: AuthService,
                 public storageService: StorageServiceService) {
@@ -62,5 +67,12 @@ export class HomePage {
             }
         });
         return await modal.present();
+    }
+
+    async logout() {
+        await (await this.loading).present();
+        await this.authService.logOut();
+        this.todoService.todos = [];
+        await (await this.loading).onDidDismiss();
     }
 }
