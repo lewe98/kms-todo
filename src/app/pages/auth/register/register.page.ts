@@ -2,6 +2,7 @@ import {Component, ViewChild} from '@angular/core';
 import {IonInput, ViewDidEnter} from '@ionic/angular';
 import {AuthService} from '../../../../services/auth/auth.service';
 import {Router} from '@angular/router';
+import {TodoService} from '../../../../services/todo/todo.service';
 
 @Component({
     selector: 'app-register',
@@ -21,7 +22,8 @@ export class RegisterPage implements ViewDidEnter {
     @ViewChild('focus') private nutzernameRef: IonInput;
 
     constructor(private authService: AuthService,
-                private router: Router) {
+                private router: Router,
+                private todoService: TodoService) {
         if (localStorage.getItem('userID')) {
             this.router.navigate(['/home']);
         }
@@ -34,7 +36,7 @@ export class RegisterPage implements ViewDidEnter {
      * @param email is the E-Mail of the User.
      * @param passwort is the password of the user.
      */
-    signUp(nutzername, email: string, passwort: string) {
+    async signUp(nutzername, email: string, passwort: string) {
         this.errors.clear();
 
         if (!nutzername) {
@@ -57,6 +59,13 @@ export class RegisterPage implements ViewDidEnter {
         }
 
         if (this.errors.size === 0) {
+            if (this.authService.getUser()) {
+                if (this.todoService.todos.length > 0) {
+                    await this.todoService.presentAlertImportTodos();
+                }
+                this.authService.isLoggedIn = true;
+                this.todoService.refreshTodos();
+            }
             this.authService.signUp(nutzername, email, passwort);
         }
     }

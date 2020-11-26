@@ -1,10 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Todo} from '../../models/todo';
-import {LoadingController, ModalController, PopoverController} from '@ionic/angular';
+import {AlertController, LoadingController, ModalController, PopoverController} from '@ionic/angular';
 import {User} from '../../models/user';
 import {PopoverPriorityComponent} from '../../app/components/popover-priority/popover-priority.component';
 import {kategorie} from '../../models/kategorie';
-import {PopoverCategoryPage} from "../../app/components/popover-category/popover-category.page";
+import {AuthService} from '../auth/auth.service';
+import {StorageServiceService} from '../storage/storage-service.service';
+import {PopoverCategoryPage} from '../../app/components/popover-category/popover-category.page';
 
 
 @Injectable({
@@ -12,22 +14,37 @@ import {PopoverCategoryPage} from "../../app/components/popover-category/popover
 })
 export class TodoService {
     todos: Todo[] = [];
-    erledigt: Todo[] = [];
     categories: kategorie[] = [];
     catname = '';
+    loading = this.loadingController.create({
+        message: 'Bitte warten...',
+        duration: 1500
+    });
 
     constructor(private modalCtrl: ModalController,
-                public popoverController: PopoverController) {
+                public popoverController: PopoverController,
+                public storageService: StorageServiceService,
+                public alertController: AlertController,
+                public loadingController: LoadingController) {
+        this.refreshTodos();
+    }
+
+    refreshTodos() {
+        this.todos = this.storageService.getTodos();
     }
 
     async add(todo: Todo, autor: User) {
         if (todo.titel && todo.beschreibung) {
             todo.id = this.todos.length;
             todo.autor = autor;
-            todo.zeit = new Date().getHours() + ':' + new Date().getMinutes();
-            console.log("ich bin da");
-            todo.kategorie = new kategorie('default', "nicht kategorisiert");
+            let minute = String(new Date().getMinutes());
+            if (minute.length === 1) {
+                minute = '0' + minute;
+            }
+            todo.zeit = new Date().getHours() + ':' + minute;
+            todo.kategorie = new kategorie('default', 'nicht kategorisiert');
             await this.todos.push(todo);
+            this.storageService.addTodo(todo);
             await this.modalCtrl.dismiss();
         } else {
             alert('du hund');
@@ -105,7 +122,7 @@ export class TodoService {
         const index = this.todos.indexOf(toto);
         toto.prioritaet = i;
         this.todos[index] = toto;
-        // TODO: Update Todo in Firebase
+        this.storageService.updateTodo(toto);
     }
 
     /***
@@ -125,20 +142,53 @@ export class TodoService {
             this.todos.find(todoAusArray => todoAusArray.id === todo.id).titel = todo.titel;
             this.todos.find(todoAusArray => todoAusArray.id === todo.id).beschreibung = todo.beschreibung;
             this.todos.find(todoAusArray => todoAusArray.id === todo.id).kategorie = this.getCatByName(this.catname);
+            this.storageService.updateTodo(todo);
             await this.modalCtrl.dismiss();
         }
     }
 
     async delete(todo: Todo) {
-        this.todos.splice(todo.id, 1);
+        this.todos.splice(this.todos.indexOf(todo), 1);
+        this.storageService.deleteTodo(todo);
     }
 
     async done(todo: Todo) {
-        this.todos[todo.id].erledigt = true;
+        this.todos[this.todos.indexOf(todo)].erledigt = true;
+        this.storageService.updateTodo(todo);
     }
 
     async notDone(todo: Todo) {
-        this.erledigt.splice(todo.id, 1);
-        this.todos.push(todo);
+        this.todos[this.todos.indexOf(todo)].erledigt = false;
+        this.storageService.updateTodo(todo);
+    }
+
+    async presentAlertImportTodos() {
+        if (localStorage.getItem('todos')) {
+        const alert = await this.alertController.create({
+            header: 'Todos übernehmen?',
+            message: 'Möchten sie die erstellten Todos in ihr Profil übernehmen.<br>Falls nicht werden sie <strong>gelöscht</strong>.',
+            buttons: [
+                {
+                    text: 'Löschen',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                    handler: (blah) => {
+                        localStorage.removeItem('todos');
+                    }
+                }, {
+                    text: 'Übernehmen',
+                    handler: async () => {
+                        await (await this.loading).present();
+                        const tmpTodo: Todo[] = JSON.parse(localStorage.getItem('todos'));
+                        localStorage.removeItem('todos');
+                        this.storageService.importToFirebase(tmpTodo);
+                        await (await this.loading).onDidDismiss();
+                        this.todos = this.storageService.getTodos();
+                    }
+                }
+            ]
+        });
+        await alert.present();
+        }
     }
 }

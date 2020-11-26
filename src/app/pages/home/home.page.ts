@@ -1,10 +1,11 @@
 import {Component} from '@angular/core';
-import {ModalController} from '@ionic/angular';
+import {LoadingController, ModalController, PopoverController} from '@ionic/angular';
 import {AddPage} from '../add/add.page';
 import {AuthService} from '../../../services/auth/auth.service';
 import {TodoService} from '../../../services/todo/todo.service';
 import {Todo} from '../../../models/todo';
 import {Router} from '@angular/router';
+import {StorageServiceService} from '../../../services/storage/storage-service.service';
 
 @Component({
     selector: 'app-home',
@@ -12,6 +13,10 @@ import {Router} from '@angular/router';
     styleUrls: ['./home.page.scss'],
 })
 export class HomePage {
+    loading = this.loadingController.create({
+        message: 'Bitte warten...',
+        duration: 1500
+    });
     priority = [
         '../../../assets/prio/highest-prio.svg',
         '../../../assets/prio/high-prio.svg',
@@ -21,14 +26,19 @@ export class HomePage {
 
     constructor(private modalCtrl: ModalController,
                 private router: Router,
+                public loadingController: LoadingController,
                 public todoService: TodoService,
-                public authService: AuthService) {
+                public authService: AuthService,
+                public storageService: StorageServiceService) {
         if (!localStorage.getItem('userID')) {
-            this.router.navigate(['/login']);
+            this.authService.isLoggedIn = false;
+            // this.router.navigate(['/login']);
         } else {
             authService.findById(localStorage.getItem('userID'))
                 .subscribe(u => {
                     authService.user = u;
+                    this.authService.isLoggedIn = true;
+                    this.todoService.todos = this.storageService.getTodos();
                 });
         }
     }
@@ -57,5 +67,12 @@ export class HomePage {
             }
         });
         return await modal.present();
+    }
+
+    async logout() {
+        await (await this.loading).present();
+        await this.authService.logOut();
+        this.todoService.todos = [];
+        await (await this.loading).onDidDismiss();
     }
 }
