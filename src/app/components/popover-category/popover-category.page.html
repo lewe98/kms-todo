@@ -1,0 +1,6 @@
+<ion-list>
+  <ion-list-header>choose category</ion-list-header>
+  <ion-item *ngFor="let cat of todoService.categories" button (click)="todoService.setCategory(task, cat)">
+    {{cat.name}}
+  </ion-item>
+</ion-list>
