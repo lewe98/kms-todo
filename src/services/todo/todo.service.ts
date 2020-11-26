@@ -25,7 +25,8 @@ export class TodoService {
             todo.id = this.todos.length;
             todo.autor = autor;
             todo.zeit = new Date().getHours() + ':' + new Date().getMinutes();
-            todo.kategorie = this.getCatByName(this.catname);
+            console.log("ich bin da");
+            todo.kategorie = new kategorie('default', "nicht kategorisiert");
             await this.todos.push(todo);
             await this.modalCtrl.dismiss();
         } else {

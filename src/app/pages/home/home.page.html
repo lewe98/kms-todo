@@ -27,7 +27,7 @@
                         <p>{{todo.beschreibung}}</p>
                     </ion-label>
 
-                    <ion-badge (click)="todoService.presentPopoverCategory($event, todo)">{{todo.kategorie.name}}</ion-badge>
+                    <ion-badge *ngIf="todo.kategorie.name != ''" (click)="todoService.presentPopoverCategory($event, todo)">{{todo.kategorie.name}}</ion-badge>
 
                     <ion-note slot="end">
                         <!-- {{todo.autor.nutzername}} -->
