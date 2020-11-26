@@ -6,8 +6,7 @@ import {Todo} from '../../models/todo';
   providedIn: 'root'
 })
 export class StorageServiceService {
-
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {}
 
 
   getTodos(): Todo[] {
@@ -87,15 +86,28 @@ export class StorageServiceService {
    */
 
   private getTodosFirebase(): Todo[] {
-    return null;
+    return this.authService.getUser().todos;
   }
   private addTodoFirebase(todo: Todo) {
-
+    const user = this.authService.getUser();
+    user.todos.push(todo);
+    this.authService.updateUser(user);
   }
   private updateTodoFirebase(todo: Todo) {
-
+    const user = this.authService.getUser();
+    const todos = user.todos;
+    user.todos = todos.map( t => {
+      if (t.id === todo.id) {
+        return t = todo;
+      } else {
+        return t;
+      }
+    });
+    this.authService.updateUser(user);
   }
   private deleteTodoFirebase(todo: Todo) {
-
+    const user = this.authService.getUser();
+    user.todos.splice(user.todos.indexOf(todo), 1);
+    this.authService.updateUser(user);
   }
 }

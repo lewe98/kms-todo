@@ -42,6 +42,8 @@ export class AuthService {
 
         copy.nutzername = copy.nutzername || null;
         copy.profilbild = copy.profilbild || null;
+        copy.todos = copy.todos || null;
+        copy.kategorien = copy.kategorien || null;
 
         return copy;
     }
@@ -147,5 +149,13 @@ export class AuthService {
         localStorage.clear();
         await this.afAuth.signOut();
         this.isLoggedIn = false;
+    }
+
+    /**
+     * Method to update the user's data in the database
+     * @param user user
+     */
+    async updateUser(user: User) {
+        await this.userCollection.doc(user.id).update(AuthService.copyAndPrepare(user));
     }
 }

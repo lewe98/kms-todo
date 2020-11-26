@@ -25,6 +25,7 @@ export class LoginPage implements ViewDidEnter {
     }
 
     async dismissClickPopover() {
+        await this.router.navigate(['/registrierung']);
         await this.popoverController.dismiss();
     }
 
