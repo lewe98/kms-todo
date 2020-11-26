@@ -6,6 +6,7 @@ import {PopoverPriorityComponent} from '../../app/components/popover-priority/po
 import {kategorie} from '../../models/kategorie';
 import {AuthService} from '../auth/auth.service';
 import {StorageServiceService} from '../storage/storage-service.service';
+import {PopoverCategoryPage} from "../../app/components/popover-category/popover-category.page";
 
 
 @Injectable({
@@ -14,6 +15,7 @@ import {StorageServiceService} from '../storage/storage-service.service';
 export class TodoService {
     todos: Todo[] = [];
     categories: kategorie[] = [];
+    catname = '';
 
     constructor(private modalCtrl: ModalController,
                 public popoverController: PopoverController,
@@ -30,11 +32,26 @@ export class TodoService {
                 minute = '0' + minute;
             }
             todo.zeit = new Date().getHours() + ':' + minute;
+            todo.kategorie = this.getCatByName(this.catname);
             await this.todos.push(todo);
             this.storageService.addTodo(todo);
             await this.modalCtrl.dismiss();
         } else {
             alert('du hund');
+        }
+    }
+
+    /**
+     * searches the categories array for a category with passed name
+     * @param catname is a parameter that is set by ngModel in form
+     * and passed to the todoService
+     * @return returns instance of the found category object
+     */
+    getCatByName(catname: string): kategorie {
+        for (const cat of this.categories) {
+            if (catname === cat.name) {
+                return cat;
+            }
         }
     }
 
@@ -67,6 +84,25 @@ export class TodoService {
         return await popover.present();
     }
 
+    /**
+     * Method that calls the popover to display the elements of categories array
+     * to select an alternative category for a task
+     * @param ev that occurs when popover is called upon
+     * @param task is an instance of the todo class
+     * that is passed to the popover page
+     */
+    async presentPopoverCategory(ev: any, task: Todo) {
+        const popover = await this.popoverController.create({
+            component: PopoverCategoryPage,
+            event: ev,
+            translucent: true,
+            componentProps: {
+                task
+            }
+        });
+        return await popover.present();
+    }
+
     /***
      * This method changes the priority of a toto 0 is the lowest
      * @param toto is the to Set toto
@@ -79,10 +115,23 @@ export class TodoService {
         this.storageService.updateTodo(toto);
     }
 
+    /***
+     * Changes the category of passed task
+     * @param task is an instance of the todo class, which is used
+     * to find the the element of the todos array that is to be altered
+     * @param cat is an instance of the kategorie class which defines
+     * the new category that is to be set
+     */
+    setCategory(task: Todo, cat: kategorie) {
+        this.todos[task.id].kategorie = cat;
+        this.catname = cat.name;
+    }
+
     async edit(todo: Todo) {
         if (todo.titel && todo.beschreibung) {
             this.todos.find(todoAusArray => todoAusArray.id === todo.id).titel = todo.titel;
             this.todos.find(todoAusArray => todoAusArray.id === todo.id).beschreibung = todo.beschreibung;
+            this.todos.find(todoAusArray => todoAusArray.id === todo.id).kategorie = this.getCatByName(this.catname);
             this.storageService.updateTodo(todo);
             await this.modalCtrl.dismiss();
         }

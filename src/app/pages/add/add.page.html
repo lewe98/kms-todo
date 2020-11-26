@@ -20,7 +20,7 @@
     <!--- Segment Button to toggle ngSwitch between adding a task and adding a category -->
     <!------------------------------------------------------------------------------------>
 
-    <ion-row class="ion-justify-content-center">
+    <ion-row *ngIf="!edit" class="ion-justify-content-center">
         <ion-segment (ionChange)="segmentChanged($event)" [(ngModel)]="picked">
             <ion-segment-button value="todo">
                 <ion-label>ToDo</ion-label>
@@ -45,6 +45,20 @@
             <ion-item>
                 <ion-label position="floating">Beschreibung</ion-label>
                 <ion-textarea [(ngModel)]="todo.beschreibung"></ion-textarea>
+            </ion-item>
+
+            <ion-item *ngIf="this.todoService.categories.length > 0">
+                <ion-label>Kategorie</ion-label>
+                <ion-select interface="popover" [(ngModel)]="this.todoService.catname">
+                    <ion-select-option *ngFor="let cat of this.todoService.categories"
+                                       [value]="cat.name">{{cat.name}}
+                    </ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item>
+                <ion-button *ngIf="this.todoService.categories.length === 0" (click)="this.picked = 'category'">
+                    Create a Category
+                </ion-button>
             </ion-item>
 
             <ion-button *ngIf="!edit" (click)="todoService.add(todo, autor)">
