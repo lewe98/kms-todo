@@ -12,7 +12,12 @@ import {Router} from '@angular/router';
     styleUrls: ['./home.page.scss'],
 })
 export class HomePage {
-    priority = ['nicht priorisiert', '!', '!!', '!!!'];
+    priority = [
+        '../../../assets/prio/highest-prio.svg',
+        '../../../assets/prio/high-prio.svg',
+        '../../../assets/prio/medium.svg',
+        '../../../assets/prio/low-prio.svg',
+        '../../../assets/prio/lowest-prio.svg'];
 
     constructor(private modalCtrl: ModalController,
                 private router: Router,
