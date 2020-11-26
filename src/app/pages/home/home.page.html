@@ -43,8 +43,12 @@
 
                 <ion-item-options side="start">
 
-                    <ion-item-option (click)="todoService.done(todo)" color="success">
+                    <ion-item-option *ngIf="!todo.erledigt" (click)="todoService.done(todo)" color="success">
                         <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
+                    </ion-item-option>
+
+                    <ion-item-option *ngIf="todo.erledigt" (click)="todoService.notDone(todo)" color="warning">
+                        <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
                     </ion-item-option>
                 </ion-item-options>
 
