@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {Todo} from '../../../models/todo';
+import {TodoService} from "../../../services/todo/todo.service";
 
 @Component({
     selector: 'app-popover-priority',
@@ -9,7 +10,7 @@ import {Todo} from '../../../models/todo';
 export class PopoverPriorityComponent {
     @Input() toto: Todo;
 
-    constructor() {
+    constructor(private todoService: TodoService) {
     }
 
 }
