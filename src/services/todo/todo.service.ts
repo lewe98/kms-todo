@@ -6,7 +6,7 @@ import {PopoverPriorityComponent} from '../../app/components/popover-priority/po
 import {kategorie} from '../../models/kategorie';
 import {AuthService} from '../auth/auth.service';
 import {StorageServiceService} from '../storage/storage-service.service';
-import {PopoverCategoryPage} from "../../app/components/popover-category/popover-category.page";
+import {PopoverCategoryPage} from '../../app/components/popover-category/popover-category.page';
 
 
 @Injectable({
@@ -32,7 +32,7 @@ export class TodoService {
                 minute = '0' + minute;
             }
             todo.zeit = new Date().getHours() + ':' + minute;
-            todo.kategorie = this.getCatByName(this.catname);
+            todo.kategorie = new kategorie('default', 'nicht kategorisiert');
             await this.todos.push(todo);
             this.storageService.addTodo(todo);
             await this.modalCtrl.dismiss();
