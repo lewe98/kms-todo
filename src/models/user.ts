@@ -1,6 +1,3 @@
-import {Todo} from './todo';
-import {kategorie} from './kategorie';
-
 export class User {
     public id: string;
     public email: string;

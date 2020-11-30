@@ -3,10 +3,10 @@ import {Todo} from '../../models/todo';
 import {AlertController, LoadingController, ModalController, PopoverController} from '@ionic/angular';
 import {User} from '../../models/user';
 import {PopoverPriorityComponent} from '../../app/components/popover-priority/popover-priority.component';
-import {kategorie} from '../../models/kategorie';
-import {AuthService} from '../auth/auth.service';
+import {Kategorie} from '../../models/kategorie';
 import {StorageServiceService} from '../storage/storage-service.service';
 import {PopoverCategoryPage} from '../../app/components/popover-category/popover-category.page';
+import {AuthService} from '../auth/auth.service';
 
 
 @Injectable({
@@ -14,7 +14,7 @@ import {PopoverCategoryPage} from '../../app/components/popover-category/popover
 })
 export class TodoService {
     todos: Todo[] = [];
-    categories: kategorie[] = [];
+    categories: Kategorie[] = [];
     catname = '';
     loading = this.loadingController.create({
         message: 'Bitte warten...',
@@ -24,6 +24,7 @@ export class TodoService {
     constructor(private modalCtrl: ModalController,
                 public popoverController: PopoverController,
                 public storageService: StorageServiceService,
+                private authService: AuthService,
                 public alertController: AlertController,
                 public loadingController: LoadingController) {
         this.refreshTodos();
@@ -33,7 +34,7 @@ export class TodoService {
         this.todos = this.storageService.getTodos();
     }
 
-    async add(todo: Todo, autor: User) {
+    async add(todo: Todo, autor: User, kategorie: string) {
         if (todo.titel && todo.beschreibung) {
             todo.id = this.todos.length;
             todo.autor = autor;
@@ -42,9 +43,9 @@ export class TodoService {
                 minute = '0' + minute;
             }
             todo.zeit = new Date().getHours() + ':' + minute;
-            todo.kategorie = new kategorie('default', 'nicht kategorisiert');
+            todo.kategorie = new Kategorie(kategorie, kategorie);
             await this.todos.push(todo);
-            this.storageService.addTodo(todo);
+            await this.storageService.addTodo(todo);
             await this.modalCtrl.dismiss();
         } else {
             alert('du hund');
@@ -57,7 +58,7 @@ export class TodoService {
      * and passed to the todoService
      * @return returns instance of the found category object
      */
-    getCatByName(catname: string): kategorie {
+    getCatByName(catname: string): Kategorie {
         for (const cat of this.categories) {
             if (catname === cat.name) {
                 return cat;
@@ -75,7 +76,7 @@ export class TodoService {
             const id: string = (this.categories.length + 1).toString();
             console.log(this.categories);
             console.log(id);
-            await this.categories.push(new kategorie((this.categories.length + 1).toString(), name));
+            await this.categories.push(new Kategorie((this.categories.length + 1).toString(), name));
             await this.modalCtrl.dismiss();
         } else {
             alert('Please enter a valid category name. ');
@@ -132,7 +133,7 @@ export class TodoService {
      * @param cat is an instance of the kategorie class which defines
      * the new category that is to be set
      */
-    setCategory(task: Todo, cat: kategorie) {
+    setCategory(task: Todo, cat: Kategorie) {
         this.todos[task.id].kategorie = cat;
         this.catname = cat.name;
     }
@@ -172,7 +173,7 @@ export class TodoService {
                     text: 'Löschen',
                     role: 'cancel',
                     cssClass: 'secondary',
-                    handler: (blah) => {
+                    handler: () => {
                         localStorage.removeItem('todos');
                     }
                 }, {

@@ -28,7 +28,7 @@
     <ion-button [title]="'Login'" (click)="login(emailForLogIn,passwordForLogIn)">Login</ion-button>
 
     <p class="margin"> Noch keinen Account? Dann registriere dich
-        <a (click)="dismissClickPopover()">
+        <a (click)="dismissClickPopover(); router.navigate(['registrierung']);">
             hier!
         </a>
     </p>
