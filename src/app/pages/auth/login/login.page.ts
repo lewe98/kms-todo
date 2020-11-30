@@ -18,8 +18,8 @@ export class LoginPage implements ViewDidEnter {
     private emailRef: IonInput;
 
     constructor(private authService: AuthService,
-                private router: Router,
                 private popoverController: PopoverController,
+                public router: Router,
                 public todoService: TodoService) {
         if (localStorage.getItem('userID')) {
             this.router.navigate(['/home']);
@@ -27,7 +27,7 @@ export class LoginPage implements ViewDidEnter {
     }
 
     async dismissClickPopover() {
-        await this.router.navigate(['/registrierung']);
+        // await this.router.navigate(['/registrierung']);
         await this.popoverController.dismiss();
     }
 

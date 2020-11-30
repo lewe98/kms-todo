@@ -3,7 +3,7 @@ import {TodoService} from '../../../services/todo/todo.service';
 import {Todo} from '../../../models/todo';
 import {ModalController} from '@ionic/angular';
 import {User} from '../../../models/user';
-import {kategorie} from "../../../models/kategorie";
+import {Kategorie} from '../../../models/kategorie';
 
 @Component({
     selector: 'app-add',
@@ -15,7 +15,7 @@ export class AddPage {
     @Input() todo: Todo;
     @Input() autor: User;
     @Input() edit: boolean;
-    @Input() category: kategorie;
+    @Input() category: Kategorie;
     @Input() name: string;
 
     private picked = 'todo';

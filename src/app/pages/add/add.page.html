@@ -61,7 +61,7 @@
                 </ion-button>
             </ion-item>
 
-            <ion-button *ngIf="!edit" (click)="todoService.add(todo, autor)">
+            <ion-button *ngIf="!edit" (click)="todoService.add(todo, autor, this.todoService.catname)">
                 <ion-icon name="add-outline"></ion-icon>
             </ion-button>
 

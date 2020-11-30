@@ -8,12 +8,15 @@
         <ion-button *ngIf="!authService.isLoggedIn" slot="end" (click)="authService.presentPopoverLogin($event)">Login</ion-button>
     </ion-toolbar>
 </ion-header>
+
 <ion-content>
-
-
     <ion-list>
-        <ion-list-header>
+        <ion-list-header *ngIf="!authService.isLoggedIn">
             ToDos
+        </ion-list-header>
+
+        <ion-list-header *ngIf="authService.isLoggedIn">
+            ToDos von {{authService.user.nutzername}}
         </ion-list-header>
 
         <div *ngIf="todoService.todos.length > 0 else empty">
