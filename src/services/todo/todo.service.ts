@@ -6,7 +6,6 @@ import {PopoverPriorityComponent} from '../../app/components/popover-priority/po
 import {Kategorie} from '../../models/kategorie';
 import {StorageServiceService} from '../storage/storage-service.service';
 import {PopoverCategoryPage} from '../../app/components/popover-category/popover-category.page';
-import {AuthService} from '../auth/auth.service';
 
 
 @Injectable({
@@ -14,6 +13,7 @@ import {AuthService} from '../auth/auth.service';
 })
 export class TodoService {
     todos: Todo[] = [];
+    filteredAufgabenArray: Todo[] = [];
     categories: Kategorie[] = [];
     catname = '';
     loading = this.loadingController.create({
@@ -24,7 +24,6 @@ export class TodoService {
     constructor(private modalCtrl: ModalController,
                 public popoverController: PopoverController,
                 public storageService: StorageServiceService,
-                private authService: AuthService,
                 public alertController: AlertController,
                 public loadingController: LoadingController) {
         this.refreshTodos();
@@ -32,6 +31,7 @@ export class TodoService {
 
     refreshTodos() {
         this.todos = this.storageService.getTodos();
+        this.filteredAufgabenArray = this.storageService.getTodos();
     }
 
     async add(todo: Todo, autor: User, kategorie: string) {
@@ -165,31 +165,31 @@ export class TodoService {
 
     async presentAlertImportTodos() {
         if (localStorage.getItem('todos')) {
-        const alert = await this.alertController.create({
-            header: 'Todos übernehmen?',
-            message: 'Möchten sie die erstellten Todos in ihr Profil übernehmen.<br>Falls nicht werden sie <strong>gelöscht</strong>.',
-            buttons: [
-                {
-                    text: 'Löschen',
-                    role: 'cancel',
-                    cssClass: 'secondary',
-                    handler: () => {
-                        localStorage.removeItem('todos');
+            const alert = await this.alertController.create({
+                header: 'Todos übernehmen?',
+                message: 'Möchten sie die erstellten Todos in ihr Profil übernehmen.<br>Falls nicht werden sie <strong>gelöscht</strong>.',
+                buttons: [
+                    {
+                        text: 'Löschen',
+                        role: 'cancel',
+                        cssClass: 'secondary',
+                        handler: () => {
+                            localStorage.removeItem('todos');
+                        }
+                    }, {
+                        text: 'Übernehmen',
+                        handler: async () => {
+                            await (await this.loading).present();
+                            const tmpTodo: Todo[] = JSON.parse(localStorage.getItem('todos'));
+                            localStorage.removeItem('todos');
+                            this.storageService.importToFirebase(tmpTodo);
+                            await (await this.loading).onDidDismiss();
+                            this.todos = this.storageService.getTodos();
+                        }
                     }
-                }, {
-                    text: 'Übernehmen',
-                    handler: async () => {
-                        await (await this.loading).present();
-                        const tmpTodo: Todo[] = JSON.parse(localStorage.getItem('todos'));
-                        localStorage.removeItem('todos');
-                        this.storageService.importToFirebase(tmpTodo);
-                        await (await this.loading).onDidDismiss();
-                        this.todos = this.storageService.getTodos();
-                    }
-                }
-            ]
-        });
-        await alert.present();
+                ]
+            });
+            await alert.present();
         }
     }
 }

@@ -1,10 +1,9 @@
-import {Component} from '@angular/core';
-import {LoadingController, ModalController, PopoverController} from '@ionic/angular';
+import {Component, ViewChild} from '@angular/core';
+import {IonInput, LoadingController, ModalController} from '@ionic/angular';
 import {AddPage} from '../add/add.page';
 import {AuthService} from '../../../services/auth/auth.service';
 import {TodoService} from '../../../services/todo/todo.service';
 import {Todo} from '../../../models/todo';
-import {Router} from '@angular/router';
 import {StorageServiceService} from '../../../services/storage/storage-service.service';
 
 @Component({
@@ -23,9 +22,9 @@ export class HomePage {
         '../../../assets/prio/medium.svg',
         '../../../assets/prio/low-prio.svg',
         '../../../assets/prio/lowest-prio.svg'];
+    @ViewChild(IonInput) search: IonInput;
 
     constructor(private modalCtrl: ModalController,
-                private router: Router,
                 public loadingController: LoadingController,
                 public todoService: TodoService,
                 public authService: AuthService,
@@ -40,6 +39,10 @@ export class HomePage {
                     this.authService.isLoggedIn = true;
                     this.todoService.todos = this.storageService.getTodos();
                 });
+            this.doSearch().then(() => {
+                this.clear();
+            });
+
         }
     }
 
@@ -74,5 +77,19 @@ export class HomePage {
         await this.authService.logOut();
         this.todoService.todos = [];
         await (await this.loading).onDidDismiss();
+    }
+
+    async doSearch() {
+        const input = await this.search.getInputElement();
+        const searchValue = input.value;
+        this.todoService.filteredAufgabenArray = this.todoService.todos.filter(t => {
+            return t.titel.toLowerCase().includes(searchValue.toLowerCase()) ||
+                t.beschreibung.toLowerCase().includes(searchValue.toLowerCase());
+        });
+    }
+
+    clear() {
+        this.search.value = '';
+        this.todoService.filteredAufgabenArray = this.todoService.todos;
     }
 }
