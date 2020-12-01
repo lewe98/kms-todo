@@ -7,6 +7,7 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {map} from 'rxjs/operators';
 import {LoadingController, PopoverController} from '@ionic/angular';
 import {LoginPage} from '../../app/pages/auth/login/login.page';
+import {TodoService} from '../todo/todo.service';
 
 @Injectable({
     providedIn: 'root'
@@ -41,7 +42,7 @@ export class AuthService {
         copy.nutzername = copy.nutzername || null;
         copy.profilbild = copy.profilbild || null;
         copy.todos = copy.todos || [];
-        copy.kategorien = copy.kategorien || null;
+        copy.kategorien = copy.kategorien || [];
 
         return copy;
     }
@@ -147,6 +148,7 @@ export class AuthService {
         await this.afAuth.signOut();
         setTimeout(() => {
             this.isLoggedIn = false;
+            // this.todoService.refreshTodos();
         }, 800);
     }
 

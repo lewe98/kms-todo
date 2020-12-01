@@ -3,6 +3,7 @@ import {IonInput, ViewDidEnter} from '@ionic/angular';
 import {AuthService} from '../../../../services/auth/auth.service';
 import {Router} from '@angular/router';
 import {TodoService} from '../../../../services/todo/todo.service';
+import {StorageServiceService} from '../../../../services/storage/storage-service.service';
 
 @Component({
     selector: 'app-register',
@@ -23,7 +24,8 @@ export class RegisterPage implements ViewDidEnter {
 
     constructor(private authService: AuthService,
                 private router: Router,
-                private todoService: TodoService) {
+                private todoService: TodoService,
+                private storageService: StorageServiceService) {
         if (localStorage.getItem('userID')) {
             this.router.navigate(['/home']);
         }
@@ -66,7 +68,8 @@ export class RegisterPage implements ViewDidEnter {
                 this.authService.isLoggedIn = true;
                 this.todoService.refreshTodos();
             }
-            this.authService.signUp(nutzername, email, passwort);
+            await this.authService.signUp(nutzername, email, passwort);
+            await this.storageService.importToFirebase(StorageServiceService.parsStringToObjectArray(this.authService.user.todos));
         }
     }
 
