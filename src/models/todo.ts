@@ -5,9 +5,9 @@ export class Todo {
     public id: number;
     public titel: string;
     public beschreibung: string;
-    public kategorie: Kategorie;
+    public kategorie: Kategorie = new Kategorie('nicht kategorisiert', 'nicht kategorisiert');
     public autor: User;
-    public erledigt: boolean;
+    public erledigt = false;
     public prioritaet = 2;
     public zeit: string;
 

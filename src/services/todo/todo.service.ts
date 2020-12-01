@@ -6,7 +6,6 @@ import {PopoverPriorityComponent} from '../../app/components/popover-priority/po
 import {Kategorie} from '../../models/kategorie';
 import {StorageServiceService} from '../storage/storage-service.service';
 import {PopoverCategoryPage} from '../../app/components/popover-category/popover-category.page';
-import {AuthService} from '../auth/auth.service';
 
 
 @Injectable({
@@ -14,24 +13,35 @@ import {AuthService} from '../auth/auth.service';
 })
 export class TodoService {
     todos: Todo[] = [];
+    filteredAufgabenArray: Todo[] = [];
     categories: Kategorie[] = [];
     catname = '';
     loading = this.loadingController.create({
         message: 'Bitte warten...',
         duration: 1500
     });
+    searchInput = '';
 
     constructor(private modalCtrl: ModalController,
                 public popoverController: PopoverController,
                 public storageService: StorageServiceService,
-                private authService: AuthService,
                 public alertController: AlertController,
                 public loadingController: LoadingController) {
         this.refreshTodos();
+        this.refreshCategories();
     }
 
     refreshTodos() {
         this.todos = this.storageService.getTodos();
+        this.filteredAufgabenArray = this.storageService.getTodos();
+        this.searchInput = '';
+    }
+
+    refreshCategories() {
+        if (!this.categories.length && !localStorage.getItem('cats')) {
+            this.storageService.addCategorie(new Kategorie('0', 'nicht kategorisiert'));
+        }
+        this.categories = this.storageService.getCategories();
     }
 
     async add(todo: Todo, autor: User, kategorie: string) {
@@ -43,12 +53,16 @@ export class TodoService {
                 minute = '0' + minute;
             }
             todo.zeit = new Date().getHours() + ':' + minute;
+            if (!kategorie) {
+                kategorie = 'nicht kategorisiert';
+            }
             todo.kategorie = new Kategorie(kategorie, kategorie);
             await this.todos.push(todo);
             await this.storageService.addTodo(todo);
+            await this.refreshTodos();
             await this.modalCtrl.dismiss();
         } else {
-            alert('du hund');
+            alert('Bitte gültige Daten eintragen.');
         }
     }
 
@@ -73,13 +87,12 @@ export class TodoService {
      */
     async addCategory(name: string) {
         if (name.length !== 0) {
-            const id: string = (this.categories.length + 1).toString();
-            console.log(this.categories);
-            console.log(id);
-            await this.categories.push(new Kategorie((this.categories.length + 1).toString(), name));
-            await this.modalCtrl.dismiss();
+            const id: string = (this.categories.length).toString();
+            const cat = new Kategorie(id, name);
+            this.storageService.addCategorie(cat);
+            this.refreshCategories();
         } else {
-            alert('Please enter a valid category name. ');
+            alert('Please enter a valid category name.');
         }
     }
 
@@ -134,15 +147,19 @@ export class TodoService {
      * the new category that is to be set
      */
     setCategory(task: Todo, cat: Kategorie) {
-        this.todos[task.id].kategorie = cat;
-        this.catname = cat.name;
+        task.kategorie = cat;
+        this.storageService.updateTodo(task);
+        this.refreshTodos();
     }
 
     async edit(todo: Todo) {
         if (todo.titel && todo.beschreibung) {
-            this.todos.find(todoAusArray => todoAusArray.id === todo.id).titel = todo.titel;
-            this.todos.find(todoAusArray => todoAusArray.id === todo.id).beschreibung = todo.beschreibung;
-            this.todos.find(todoAusArray => todoAusArray.id === todo.id).kategorie = this.getCatByName(this.catname);
+            this.todos = this.todos.map(t => {
+                if (t.id === todo.id) {
+                    todo.kategorie = this.getCatByName(this.catname);
+                    return todo;
+                }
+            });
             this.storageService.updateTodo(todo);
             await this.modalCtrl.dismiss();
         }
@@ -151,45 +168,55 @@ export class TodoService {
     async delete(todo: Todo) {
         this.todos.splice(this.todos.indexOf(todo), 1);
         this.storageService.deleteTodo(todo);
+        this.refreshTodos();
+    }
+
+    async deleteCategorie(cat: Kategorie) {
+        this.categories.splice(this.categories.indexOf(cat), 1);
+        this.storageService.deleteCategorie(cat);
+        this.refreshCategories();
     }
 
     async done(todo: Todo) {
-        this.todos[this.todos.indexOf(todo)].erledigt = true;
+        console.log(todo);
+        todo.erledigt = true;
         this.storageService.updateTodo(todo);
+        this.refreshTodos();
     }
 
     async notDone(todo: Todo) {
-        this.todos[this.todos.indexOf(todo)].erledigt = false;
+        todo.erledigt = false;
         this.storageService.updateTodo(todo);
+        this.refreshTodos();
     }
 
     async presentAlertImportTodos() {
         if (localStorage.getItem('todos')) {
-        const alert = await this.alertController.create({
-            header: 'Todos übernehmen?',
-            message: 'Möchten sie die erstellten Todos in ihr Profil übernehmen.<br>Falls nicht werden sie <strong>gelöscht</strong>.',
-            buttons: [
-                {
-                    text: 'Löschen',
-                    role: 'cancel',
-                    cssClass: 'secondary',
-                    handler: () => {
-                        localStorage.removeItem('todos');
+            const alert = await this.alertController.create({
+                header: 'Todos übernehmen?',
+                message: 'Möchten sie die erstellten Todos in ihr Profil übernehmen.<br>Falls nicht werden sie <strong>gelöscht</strong>.',
+                buttons: [
+                    {
+                        text: 'Löschen',
+                        role: 'cancel',
+                        cssClass: 'secondary',
+                        handler: () => {
+                            localStorage.removeItem('todos');
+                        }
+                    }, {
+                        text: 'Übernehmen',
+                        handler: async () => {
+                            await (await this.loading).present();
+                            const tmpTodo: Todo[] = JSON.parse(localStorage.getItem('todos'));
+                            localStorage.removeItem('todos');
+                            this.storageService.importToFirebase(tmpTodo);
+                            await (await this.loading).onDidDismiss();
+                            this.refreshTodos();
+                        }
                     }
-                }, {
-                    text: 'Übernehmen',
-                    handler: async () => {
-                        await (await this.loading).present();
-                        const tmpTodo: Todo[] = JSON.parse(localStorage.getItem('todos'));
-                        localStorage.removeItem('todos');
-                        this.storageService.importToFirebase(tmpTodo);
-                        await (await this.loading).onDidDismiss();
-                        this.todos = this.storageService.getTodos();
-                    }
-                }
-            ]
-        });
-        await alert.present();
+                ]
+            });
+            await alert.present();
         }
     }
 }
