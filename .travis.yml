@@ -2,21 +2,15 @@ language: node_js
 node_js:
   - node
 
-apt:
-  sources:
-    - google-chrome
-  packages:
-    - google-chrome-stable
-    - google-chrome-beta
+cache:
+  directories:
+    - node_modules
 
-before_install:
-  - export CHROME_BIN=chromium-browser
-  - export DISPLAY=:99.0
-
-before_script:
-  - npm install -g ionic
-  - npm install
+addons:
+  chrome: stable
 
 script:
-  - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
-
+  - npm run lint
+  - npm run test:headless
+  - npm run build
+  - xvfb-run npm run e2e
