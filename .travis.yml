@@ -18,6 +18,5 @@ before_script:
   - npm install
 
 script:
-  - npm run ion
   - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
 
