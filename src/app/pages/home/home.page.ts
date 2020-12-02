@@ -87,6 +87,16 @@ export class HomePage implements ViewDidEnter {
         });
     }
 
+    async filterByCat(catname: string) {
+        if (catname === 'no filter') {
+            this.todoService.filteredAufgabenArray = this.todoService.todos;
+        } else {
+            this.todoService.filteredAufgabenArray = this.todoService.todos.filter(t => {
+                return t.kategorie.name === catname;
+            });
+        }
+    }
+
     clear() {
         this.search.value = '';
         this.todoService.filteredAufgabenArray = this.todoService.todos;

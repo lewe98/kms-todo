@@ -31,6 +31,13 @@
         </ion-icon>
 
     </ion-item>
+    <ion-item>
+        <ion-label>Filter List By Category </ion-label>
+        <ion-select interface="popover" cancelText="Dismiss" [(ngModel)]="this.todoService.filterCat" placeholder="Select Category" (ionChange)="this.filterByCat(todoService.filterCat)">
+            <ion-select-option *ngFor="let cat of todoService.categories" [value]="cat.name">{{cat.name}}</ion-select-option>
+            <ion-select-option [value]="">no filter</ion-select-option>
+        </ion-select>
+    </ion-item>
     <ion-list>
         <ion-list-header *ngIf="!authService.isLoggedIn">
             ToDos
