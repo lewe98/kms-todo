@@ -5,13 +5,16 @@ import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firest
 import {Router} from '@angular/router';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {map} from 'rxjs/operators';
-import {LoadingController} from '@ionic/angular';
+import {LoadingController, PopoverController} from '@ionic/angular';
+import {LoginPage} from '../../app/pages/auth/login/login.page';
+import {TodoService} from '../todo/todo.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
 
+    isLoggedIn = false;
     user: User;
     subUser: Subscription;
     userCollection: AngularFirestoreCollection<User>;
@@ -23,7 +26,8 @@ export class AuthService {
     constructor(private router: Router,
                 private afs: AngularFirestore,
                 private afAuth: AngularFireAuth,
-                public loadingController: LoadingController) {
+                public loadingController: LoadingController,
+                public popoverController: PopoverController) {
         this.userCollection = afs.collection<User>('users');
     }
 
@@ -37,8 +41,20 @@ export class AuthService {
 
         copy.nutzername = copy.nutzername || null;
         copy.profilbild = copy.profilbild || null;
+        copy.todos = copy.todos || [];
+        copy.kategorien = copy.kategorien || [];
 
         return copy;
+    }
+
+    async presentPopoverLogin(ev: any) {
+        const popover = await this.popoverController.create({
+            component: LoginPage,
+            event: ev,
+            translucent: true,
+            componentProps: {}
+        });
+        return await popover.present();
     }
 
     /**
@@ -88,6 +104,7 @@ export class AuthService {
                 this.subUser = this.findById(res.user.uid)
                     .subscribe(u => {
                         this.user = u;
+                        this.isLoggedIn = true;
                     });
                 localStorage.setItem('userID', res.user.uid);
                 await this.router.navigate(['/home']);
@@ -109,7 +126,7 @@ export class AuthService {
             .then(res => {
                 localStorage.setItem('userID', res.user.uid);
                 this.subUser = this.findById(res.user.uid)
-                    .subscribe(u => {
+                    .subscribe(async u => {
                         this.user = u;
                     });
             })
@@ -129,6 +146,17 @@ export class AuthService {
         this.user = undefined;
         localStorage.clear();
         await this.afAuth.signOut();
-        await this.router.navigate(['/login']);
+        setTimeout(() => {
+            this.isLoggedIn = false;
+            // this.todoService.refreshTodos();
+        }, 800);
+    }
+
+    /**
+     * Method to update the user's data in the database
+     * @param user user
+     */
+    async updateUser(user: User) {
+        await this.userCollection.doc(user.id).update(AuthService.copyAndPrepare(user));
     }
 }

@@ -1,7 +1,8 @@
 import {Component, ViewChild} from '@angular/core';
-import {IonInput, ViewDidEnter} from '@ionic/angular';
+import {IonInput, PopoverController, ViewDidEnter} from '@ionic/angular';
 import {AuthService} from '../../../../services/auth/auth.service';
 import {Router} from '@angular/router';
+import {TodoService} from '../../../../services/todo/todo.service';
 
 @Component({
     selector: 'app-login',
@@ -17,10 +18,17 @@ export class LoginPage implements ViewDidEnter {
     private emailRef: IonInput;
 
     constructor(private authService: AuthService,
-                private router: Router) {
+                private popoverController: PopoverController,
+                public router: Router,
+                public todoService: TodoService) {
         if (localStorage.getItem('userID')) {
             this.router.navigate(['/home']);
         }
+    }
+
+    async dismissClickPopover() {
+        // await this.router.navigate(['/registrierung']);
+        await this.popoverController.dismiss();
     }
 
     /**
@@ -30,8 +38,16 @@ export class LoginPage implements ViewDidEnter {
      */
     async login(email: string, password: string) {
         this.errors.clear();
+        await this.dismissClickPopover();
         await this.authService.signIn(email, password)
-            .then(() => {
+            .then(async () => {
+                if (this.authService.getUser()) {
+                    if (this.todoService.todos.length > 0) {
+                        await this.todoService.presentAlertImportTodos();
+                    }
+                    this.authService.isLoggedIn = true;
+                    this.todoService.refreshTodos();
+                }
                 this.router.navigate(['/home']);
             })
             .catch((error) => {

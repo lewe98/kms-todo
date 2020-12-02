@@ -1,9 +1,11 @@
 import {Injectable} from '@angular/core';
 import {Todo} from '../../models/todo';
-import {LoadingController, ModalController, PopoverController} from '@ionic/angular';
+import {AlertController, LoadingController, ModalController, PopoverController} from '@ionic/angular';
 import {User} from '../../models/user';
 import {PopoverPriorityComponent} from '../../app/components/popover-priority/popover-priority.component';
-import {kategorie} from '../../models/kategorie';
+import {Kategorie} from '../../models/kategorie';
+import {StorageServiceService} from '../storage/storage-service.service';
+import {PopoverCategoryPage} from '../../app/components/popover-category/popover-category.page';
 
 
 @Injectable({
@@ -11,22 +13,70 @@ import {kategorie} from '../../models/kategorie';
 })
 export class TodoService {
     todos: Todo[] = [];
-    erledigt: Todo[] = [];
-    categories: kategorie[] = [];
+    filteredAufgabenArray: Todo[] = [];
+    categories: Kategorie[] = [];
+    catname = '';
+    loading = this.loadingController.create({
+        message: 'Bitte warten...',
+        duration: 1500
+    });
+    searchInput = '';
 
     constructor(private modalCtrl: ModalController,
-                public popoverController: PopoverController) {
+                public popoverController: PopoverController,
+                public storageService: StorageServiceService,
+                public alertController: AlertController,
+                public loadingController: LoadingController) {
+        this.refreshTodos();
+        this.refreshCategories();
     }
 
-    async add(todo: Todo, autor: User) {
+    refreshTodos() {
+        this.todos = this.storageService.getTodos();
+        this.filteredAufgabenArray = this.storageService.getTodos();
+        this.searchInput = '';
+    }
+
+    refreshCategories() {
+        if (!this.categories.length && !localStorage.getItem('cats')) {
+            this.storageService.addCategorie(new Kategorie('0', 'nicht kategorisiert'));
+        }
+        this.categories = this.storageService.getCategories();
+    }
+
+    async add(todo: Todo, autor: User, kategorie: string) {
         if (todo.titel && todo.beschreibung) {
             todo.id = this.todos.length;
             todo.autor = autor;
-            todo.zeit = new Date().getHours() + ':' + new Date().getMinutes();
+            let minute = String(new Date().getMinutes());
+            if (minute.length === 1) {
+                minute = '0' + minute;
+            }
+            todo.zeit = new Date().getHours() + ':' + minute;
+            if (!kategorie) {
+                kategorie = 'nicht kategorisiert';
+            }
+            todo.kategorie = new Kategorie(kategorie, kategorie);
             await this.todos.push(todo);
+            await this.storageService.addTodo(todo);
+            await this.refreshTodos();
             await this.modalCtrl.dismiss();
         } else {
-            alert('du hund');
+            alert('Bitte gültige Daten eintragen.');
+        }
+    }
+
+    /**
+     * searches the categories array for a category with passed name
+     * @param catname is a parameter that is set by ngModel in form
+     * and passed to the todoService
+     * @return returns instance of the found category object
+     */
+    getCatByName(catname: string): Kategorie {
+        for (const cat of this.categories) {
+            if (catname === cat.name) {
+                return cat;
+            }
         }
     }
 
@@ -37,13 +87,12 @@ export class TodoService {
      */
     async addCategory(name: string) {
         if (name.length !== 0) {
-            const id: string = (this.categories.length + 1).toString();
-            console.log(this.categories);
-            console.log(id);
-            await this.categories.push(new kategorie((this.categories.length + 1).toString(), name));
-            await this.modalCtrl.dismiss();
+            const id: string = (this.categories.length).toString();
+            const cat = new Kategorie(id, name);
+            this.storageService.addCategorie(cat);
+            this.refreshCategories();
         } else {
-            alert('Please enter a valid category name. ');
+            alert('Please enter a valid category name.');
         }
     }
 
@@ -59,6 +108,25 @@ export class TodoService {
         return await popover.present();
     }
 
+    /**
+     * Method that calls the popover to display the elements of categories array
+     * to select an alternative category for a task
+     * @param ev that occurs when popover is called upon
+     * @param task is an instance of the todo class
+     * that is passed to the popover page
+     */
+    async presentPopoverCategory(ev: any, task: Todo) {
+        const popover = await this.popoverController.create({
+            component: PopoverCategoryPage,
+            event: ev,
+            translucent: true,
+            componentProps: {
+                task
+            }
+        });
+        return await popover.present();
+    }
+
     /***
      * This method changes the priority of a toto 0 is the lowest
      * @param toto is the to Set toto
@@ -68,30 +136,87 @@ export class TodoService {
         const index = this.todos.indexOf(toto);
         toto.prioritaet = i;
         this.todos[index] = toto;
-        // TODO: Update Todo in Firebase
+        this.storageService.updateTodo(toto);
+    }
+
+    /***
+     * Changes the category of passed task
+     * @param task is an instance of the todo class, which is used
+     * to find the the element of the todos array that is to be altered
+     * @param cat is an instance of the kategorie class which defines
+     * the new category that is to be set
+     */
+    setCategory(task: Todo, cat: Kategorie) {
+        task.kategorie = cat;
+        this.storageService.updateTodo(task);
+        this.refreshTodos();
     }
 
     async edit(todo: Todo) {
         if (todo.titel && todo.beschreibung) {
-            this.todos.find(todoAusArray => todoAusArray.id === todo.id).titel = todo.titel;
-            this.todos.find(todoAusArray => todoAusArray.id === todo.id).beschreibung = todo.beschreibung;
+            this.todos = this.todos.map(t => {
+                if (t.id === todo.id) {
+                    todo.kategorie = this.getCatByName(this.catname);
+                    return todo;
+                }
+            });
+            this.storageService.updateTodo(todo);
             await this.modalCtrl.dismiss();
         }
     }
 
     async delete(todo: Todo) {
-        this.todos.splice(todo.id, 1);
+        this.todos.splice(this.todos.indexOf(todo), 1);
+        this.storageService.deleteTodo(todo);
+        this.refreshTodos();
+    }
+
+    async deleteCategorie(cat: Kategorie) {
+        this.categories.splice(this.categories.indexOf(cat), 1);
+        this.storageService.deleteCategorie(cat);
+        this.refreshCategories();
     }
 
     async done(todo: Todo) {
-        this.todos[todo.id].erledigt = true;
-        console.log(this.todos[todo.id].erledigt);
-        // this.todos.splice(todo.id, 1);
-        // this.erledigt.push(todo);
+        console.log(todo);
+        todo.erledigt = true;
+        this.storageService.updateTodo(todo);
+        this.refreshTodos();
     }
 
     async notDone(todo: Todo) {
-        this.erledigt.splice(todo.id, 1);
-        this.todos.push(todo);
+        todo.erledigt = false;
+        this.storageService.updateTodo(todo);
+        this.refreshTodos();
+    }
+
+    async presentAlertImportTodos() {
+        if (localStorage.getItem('todos')) {
+            const alert = await this.alertController.create({
+                header: 'Todos übernehmen?',
+                message: 'Möchten sie die erstellten Todos in ihr Profil übernehmen.<br>Falls nicht werden sie <strong>gelöscht</strong>.',
+                buttons: [
+                    {
+                        text: 'Löschen',
+                        role: 'cancel',
+                        cssClass: 'secondary',
+                        handler: () => {
+                            localStorage.removeItem('todos');
+                        }
+                    }, {
+                        text: 'Übernehmen',
+                        handler: async () => {
+                            await (await this.loading).present();
+                            const tmpTodo: Todo[] = JSON.parse(localStorage.getItem('todos'));
+                            localStorage.removeItem('todos');
+                            this.storageService.importToFirebase(tmpTodo);
+                            await (await this.loading).onDidDismiss();
+                            this.refreshTodos();
+                        }
+                    }
+                ]
+            });
+            await alert.present();
+        }
     }
 }

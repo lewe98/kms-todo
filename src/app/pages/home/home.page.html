@@ -3,39 +3,77 @@
         <ion-buttons slot="start">
             <ion-back-button></ion-back-button>
         </ion-buttons>
-        <ion-title>to schmu - for all the schmu you gotta do</ion-title>
+        <ion-title>Aufgaben Manager KMS</ion-title>
+        <ion-button *ngIf="authService.isLoggedIn" slot="end" color="warning" (click)="logout()">Logout</ion-button>
+        <ion-button *ngIf="!authService.isLoggedIn" slot="end" (click)="authService.presentPopoverLogin($event)">Login
+        </ion-button>
     </ion-toolbar>
 </ion-header>
-<ion-content>
-    <ion-button (click)="authService.logOut()">Logout</ion-button>
 
+<ion-content>
+    <ion-item>
+        <ion-input (ionInput)="doSearch()"
+                   clearOnEdit="false"
+                   color="warning"
+                   inputmode="text"
+                   placeholder="ToDo suchen..." required="true">
+        </ion-input>
+
+        <ion-icon *ngIf="todoService.filteredAufgabenArray.length < todoService.todos.length"
+                  name="close-outline"
+                  (click)="clear()"
+                  color="warning"
+                  slot="end">
+        </ion-icon>
+        <ion-icon name="search-outline"
+                  color="warning"
+                  slot="end">
+        </ion-icon>
+
+    </ion-item>
     <ion-list>
-        <ion-list-header>
+        <ion-list-header *ngIf="!authService.isLoggedIn">
             ToDos
         </ion-list-header>
 
-        <div *ngIf="todoService.todos.length > 0 else empty">
-            <ion-item-sliding *ngFor="let todo of todoService.todos">
-                <ion-item [disabled]=todo.erledigt>
+        <ion-list-header *ngIf="authService.isLoggedIn">
+            ToDos von {{authService.user.nutzername}}
+        </ion-list-header>
+
+        <div *ngIf="todoService.filteredAufgabenArray.length > 0 else empty">
+            <ion-item-sliding *ngFor="let todo of todoService.filteredAufgabenArray">
+                <ion-item [disabled]="todo.erledigt">
                     <!--<ion-avatar slot="start">
                         <img alt="{{todo.autor.nutzername}}" src="{{todo.autor.profilbild}}">
                     </ion-avatar>-->
 
                     <ion-label>
                         <h2 [class.done]="todo.erledigt">{{todo.titel}}</h2>
-                        <h4>{{todo.kategorie}}</h4>
+                        <!--                        <h4>{{todo.kategorie}}</h4>-->
                         <p>{{todo.beschreibung}}</p>
                     </ion-label>
-                    <ion-badge (click)="todoService.presentPopoverPriority($event, todo)">{{priority[todo.prioritaet]}}</ion-badge>
+
+                    <ion-badge *ngIf="todo.kategorie.name != ''"
+                               (click)="todoService.presentPopoverCategory($event, todo)">{{todo.kategorie.name}}</ion-badge>
+
                     <ion-note slot="end">
                         <!-- {{todo.autor.nutzername}} -->
                         {{todo.zeit}} Uhr
                     </ion-note>
+
+                    <ion-badge slot="start" color="none" (click)="todoService.presentPopoverPriority($event, todo)">
+                        <img [src]=priority[todo.prioritaet] alt="prio icon">
+                    </ion-badge>
                 </ion-item>
 
                 <ion-item-options side="start">
-                    <ion-item-option (click)="todoService.done(todo)" color="success">
+
+                    <ion-item-option *ngIf="!todo.erledigt" (click)="todoService.done(todo)" color="success">
                         <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
+                    </ion-item-option>
+
+                    <ion-item-option *ngIf="todo.erledigt" (click)="todoService.notDone(todo)" color="warning">
+                        <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
                     </ion-item-option>
                 </ion-item-options>
 
@@ -52,12 +90,12 @@
         </div>
 
     </ion-list>
-
     <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-        <ion-fab-button (click)="addModal()">
+        <ion-fab-button color="warning" (click)="addModal()">
             <ion-icon name="add-outline"></ion-icon>
         </ion-fab-button>
     </ion-fab>
+
 </ion-content>
 
 <ng-template #empty>

@@ -20,7 +20,7 @@
     <!--- Segment Button to toggle ngSwitch between adding a task and adding a category -->
     <!------------------------------------------------------------------------------------>
 
-    <ion-row class="ion-justify-content-center">
+    <ion-row *ngIf="!edit" class="ion-justify-content-center">
         <ion-segment (ionChange)="segmentChanged($event)" [(ngModel)]="picked">
             <ion-segment-button value="todo">
                 <ion-label>ToDo</ion-label>
@@ -47,7 +47,22 @@
                 <ion-textarea [(ngModel)]="todo.beschreibung"></ion-textarea>
             </ion-item>
 
-            <ion-button *ngIf="!edit" (click)="todoService.add(todo, autor)">
+            <ion-item *ngIf="this.todoService.categories.length > 0">
+                <ion-label>Kategorie</ion-label>
+                <ion-select interface="popover"
+                            [(ngModel)]="this.todoService.catname">
+                    <ion-select-option *ngFor="let cat of this.todoService.categories"
+                                       [value]="cat.name">{{cat.name}}
+                    </ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item>
+                <ion-button *ngIf="this.todoService.categories.length === 0" (click)="this.picked = 'category'">
+                    Create a Category
+                </ion-button>
+            </ion-item>
+
+            <ion-button *ngIf="!edit" (click)="todoService.add(todo, autor, this.todoService.catname)">
                 <ion-icon name="add-outline"></ion-icon>
             </ion-button>
 
@@ -62,12 +77,24 @@
 
         <div *ngSwitchCase="'category'">
 
+
+            <ion-list *ngFor="let cat of todoService.categories">
+                <ion-item *ngIf="cat.name !== 'nicht kategorisiert'">
+                    <h5>{{cat.name}}</h5>
+
+                        <ion-icon (click)="todoService.deleteCategorie(cat)" color="danger" slot="end" name="trash-outline"></ion-icon>
+
+                </ion-item>
+            </ion-list>
+
+            <br>
+
             <ion-item>
-                <ion-label position="floating">Enter a Category Name here</ion-label>
+                <ion-label style="color: grey" position="floating">Enter a Category Name here</ion-label>
                 <ion-input type="text" [(ngModel)]="name"></ion-input>
             </ion-item>
 
-            <ion-button *ngIf="!edit" (click)="todoService.addCategory(name)">
+            <ion-button *ngIf="!edit" (click)="todoService.addCategory(name); name = ''">
                 Save
             </ion-button>
         </div>

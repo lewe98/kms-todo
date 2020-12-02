@@ -1,6 +1,6 @@
-export class kategorie {
-    public id: string;
-    public name: string;
+export class Kategorie {
+    public id = '0';
+    public name = 'nicht kategorisiert';
 
     constructor(id: string, name: string) {
         this.id = id;
