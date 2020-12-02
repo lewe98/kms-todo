@@ -1,0 +1,18 @@
+<ion-list>
+  <ion-list-header>Priorisieren</ion-list-header>
+  <ion-item button (click)="todoService.setPriority(toto, 0)">
+    <img src="../../../assets/prio/highest-prio.svg" alt="highest">highest
+  </ion-item>
+  <ion-item button (click)="todoService.setPriority(toto, 1)">
+    <img src="../../../assets/prio/high-prio.svg" alt="high">high
+  </ion-item>
+  <ion-item button (click)="todoService.setPriority(toto, 2)">
+    <img src="../../../assets/prio/medium.svg" alt="medium">medium
+  </ion-item>
+  <ion-item button (click)="todoService.setPriority(toto, 3)">
+    <img src="../../../assets/prio/low-prio.svg" alt="low">low
+  </ion-item>
+  <ion-item button (click)="todoService.setPriority(toto, 4)">
+    <img src="../../../assets/prio/lowest-prio.svg" alt="lowest">lowest
+  </ion-item>
+</ion-list>

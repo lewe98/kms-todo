@@ -2,12 +2,13 @@ import {Kategorie} from './kategorie';
 import {User} from './user';
 
 export class Todo {
-    public id: string;
+    public id: number;
     public titel: string;
     public beschreibung: string;
-    public kategorie: Kategorie;
+    public kategorie: Kategorie = new Kategorie('nicht kategorisiert', 'nicht kategorisiert');
     public autor: User;
-    public erledigt: boolean;
+    public erledigt = false;
+    public prioritaet = 2;
     public zeit: string;
 
     /*constructor(titel: string, beschreibung: string, kategorie: Kategorie, autor: User) {
