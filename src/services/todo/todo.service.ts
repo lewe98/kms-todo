@@ -21,6 +21,7 @@ export class TodoService {
         duration: 1500
     });
     searchInput = '';
+    filterCat = '';
 
     constructor(private modalCtrl: ModalController,
                 public popoverController: PopoverController,
