@@ -2,7 +2,7 @@ sudo: required
 dist: trusty
 language: node_js
 node_js:
-  - "12.0"
+  - "14.15.0"
 
 apt:
   sources:
@@ -17,7 +17,8 @@ before_install:
   - sh -e /etc/init.d/xvfb start
 
 before_script:
-  - npm install -g ionic
+  - npm install -g ionic/cli
 
 script:
+  - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
   - npm test
