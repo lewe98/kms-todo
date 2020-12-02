@@ -17,7 +17,9 @@ before_install:
   - sh -e /etc/init.d/xvfb start
 
 before_script:
+  - npm install -g @angular/cli
   - npm install -g ionic
 
 script:
+  - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
   - npm test
