@@ -3,8 +3,8 @@ node_js:
   - node
 
 branches:
- only:
- — dev
+  only:
+  — dev
 
 apt:
   sources:
