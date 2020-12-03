@@ -7,7 +7,6 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {map} from 'rxjs/operators';
 import {LoadingController, PopoverController} from '@ionic/angular';
 import {LoginPage} from '../../app/pages/auth/login/login.page';
-import {TodoService} from '../todo/todo.service';
 
 @Injectable({
     providedIn: 'root'
