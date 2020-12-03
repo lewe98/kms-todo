@@ -7,11 +7,8 @@ describe('new App', () => {
     page = new AppPage();
   });
 
-  it('should be blank', () => {
+  it('should ', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toContain('Liste nach Kategorie filtern\n' +
-        '      Filter wählen...\n' +
-        '      ToDos\n' +
-        '      Hier klicken, um ToDo hinzuzufügen.');
+    expect(page.getParagraphText()).toContain('Liste nach Kategorie filtern');
   });
 });
