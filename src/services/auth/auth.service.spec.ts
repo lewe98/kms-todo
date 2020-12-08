@@ -4,15 +4,35 @@ import {AuthService} from './auth.service';
 import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {AngularFireModule} from '@angular/fire';
+import {BehaviorSubject} from 'rxjs';
+import {AngularFirestore, AngularFirestoreModule} from '@angular/fire/firestore';
+import {AppRoutingModule} from '../../app/app-routing.module';
+import {environment} from '../../environments/environment';
+import {AngularFireAuthModule} from '@angular/fire/auth';
 
 describe('AuthService', () => {
     let service: AuthService;
     const spy = jasmine.createSpyObj('AuthService', ['signUp', 'signIn', 'getUser', 'logOut']);
+    const FirestoreStub = {
+        collection: (name: string) => ({
+            doc: (_id: string) => ({
+                valueChanges: () => new BehaviorSubject({ foo: 'bar' }),
+                set: (_d: any) => new Promise((resolve, _reject) => resolve()),
+            }),
+        }),
+    };
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [RouterTestingModule, HttpClientTestingModule, AngularFireModule],
-            providers: [{provide: AuthService, useValue: spy}]
+            imports: [RouterTestingModule, HttpClientTestingModule, AngularFireModule,
+                AppRoutingModule,
+                AngularFireModule.initializeApp(environment.firebaseConfig),
+                AngularFirestoreModule,
+                AngularFireAuthModule],
+            providers: [
+                {provide: AngularFirestore, useValue: FirestoreStub},
+                {provide: AuthService, useValue: spy},
+            ]
         }).compileComponents();
         service = TestBed.inject(AuthService);
     });
