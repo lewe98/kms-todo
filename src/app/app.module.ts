@@ -28,7 +28,6 @@ import {PopoverPriorityComponent} from './components/popover-priority/popover-pr
     providers: [
         StatusBar,
         SplashScreen,
-        ModalController,
         {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
     ],
     bootstrap: [AppComponent]
