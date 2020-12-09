@@ -24,7 +24,8 @@ import {PopoverPriorityComponent} from './components/popover-priority/popover-pr
         AppRoutingModule,
         AngularFireModule.initializeApp(environment.firebaseConfig),
         AngularFirestoreModule,
-        AngularFireAuthModule],
+        AngularFireAuthModule
+    ],
     providers: [
         StatusBar,
         SplashScreen,

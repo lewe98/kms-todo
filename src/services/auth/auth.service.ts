@@ -96,7 +96,7 @@ export class AuthService {
      * @param passwort user's password
      */
     async signUp(nutzername: string, email: string, passwort: string) {
-        await (await this.loading).present();
+        // await (await this.loading).present();
         await this.afAuth.createUserWithEmailAndPassword(email, passwort)
             .then(async res => {
                 this.persist(new User(email, nutzername, res.user.photoURL), res.user.uid);
@@ -111,7 +111,7 @@ export class AuthService {
             .catch((error) => {
                 alert(error);
             });
-        await (await this.loading).onDidDismiss();
+        // await (await this.loading).onDidDismiss();
     }
 
     /**

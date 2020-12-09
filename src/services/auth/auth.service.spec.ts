@@ -1,16 +1,43 @@
 import {TestBed} from '@angular/core/testing';
 
 import {AuthService} from './auth.service';
-import {User} from '../../models/user';
+import {RouterTestingModule} from '@angular/router/testing';
+import {AngularFireModule} from '@angular/fire';
+import {environment} from '../../environments/environment';
+import {PopoverController} from '@ionic/angular';
+import {AngularFirestoreModule} from '@angular/fire/firestore';
+import {AngularFireAuth, AngularFireAuthModule} from '@angular/fire/auth';
+import firebase from 'firebase';
+import User = firebase.User;
 
 describe('AuthService', () => {
     let service: AuthService;
-    const spy = jasmine.createSpyObj('AuthService', ['signUp', 'signIn', 'getUser', 'logOut']);
+    let spy;
+    const popoverSpy = jasmine.createSpyObj('PopoverController', ['dismiss']);
+    // const user = {uid: 'test', photoURL: 'test'};
+    // const user = new User('lol', 'lol', 'lol');
+    // const spy = jasmine.createSpyObj('AuthService', ['signUp', 'signIn', 'getUser', 'logOut']);
 
     beforeEach(() => {
+        spy = jasmine.createSpyObj('AngularFireAuth',
+            {
+                createUserWithEmailAndPassword: 'createUserWithEmailAndPassword'
+            });
+        spy.createUserWithEmailAndPassword.and.returnValue(Promise.resolve(user));
+
         TestBed.configureTestingModule({
-            imports: [],
-            providers: [{provide: AuthService, useValue: spy}]
+            imports: [RouterTestingModule,
+                AngularFireModule.initializeApp(environment.firebaseConfig),
+                AngularFirestoreModule,
+                AngularFireAuthModule
+                /*IonicModule.forRoot(),
+                RouterTestingModule,
+            */
+            ],
+            providers: [
+                {provide: PopoverController, useValue: popoverSpy},
+                {provide: AngularFireAuth, useValue: spy}
+            ]
         }).compileComponents();
         service = TestBed.inject(AuthService);
     });
@@ -19,18 +46,21 @@ describe('AuthService', () => {
         expect(service).toBeTruthy();
     });
 
-   /* describe('check type of user', () => {
-        it('should be User', (done) => {
-            expect(service.user).toBe(typeof User);
-            done();
-        });
-    });*/
+    /* describe('check type of user', () => {
+         it('should be User', (done) => {
+             expect(service.user).toBe(typeof User);
+             done();
+         });
+     });*/
 
     describe('sign up', () => {
         it('should sign up', (done) => {
-            service.signUp('jasmine', 'jasmine@karma.com', 'jasmine');
-            expect(service.isLoggedIn).toBe(true);
-            done();
+            service.signUp('test', 'test@test.de', 'test')
+                .then(() => {
+                    console.log(service.user);
+                    expect(service.user.nutzername).toBe('test');
+                    done();
+                });
         });
     });
     /*
