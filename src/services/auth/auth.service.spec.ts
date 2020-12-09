@@ -18,6 +18,7 @@ describe('AuthService', () => {
     // const user = new User('lol', 'lol', 'lol');
     // const spy = jasmine.createSpyObj('AuthService', ['signUp', 'signIn', 'getUser', 'logOut']);
 
+
     beforeEach(() => {
         spy = jasmine.createSpyObj('AngularFireAuth',
             {
@@ -53,15 +54,21 @@ describe('AuthService', () => {
          });
      });*/
 
-    describe('sign up', () => {
-        it('should sign up', (done) => {
+    describe('sign up', async () => {
+        it('Test isLoggedIn before Registration', (done) => {
+            expect(service.isLoggedIn).toBeFalse();
+            done();
+        });
+        it('Test User SignIn', (done) => {
             service.signUp('test', 'test@test.de', 'test', () => {
                 console.log(service.user);
                 expect(service.user.nutzername).toBe('test');
+                expect(service.isLoggedIn).toBeTrue();
                 done();
             });
         });
     });
+
     /*
             describe('log in', () => {
                 it('should log in', (done) => {
@@ -88,3 +95,5 @@ describe('AuthService', () => {
             });*/
 
 });
+
+
