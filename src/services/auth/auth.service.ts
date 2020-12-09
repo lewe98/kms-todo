@@ -94,8 +94,9 @@ export class AuthService {
      * @param nutzername user's username
      * @param email user's email
      * @param passwort user's password
+     * @param done() is a call back if user subUser is triggered
      */
-    async signUp(nutzername: string, email: string, passwort: string) {
+    async signUp(nutzername: string, email: string, passwort: string, done: () => void) {
         // await (await this.loading).present();
         await this.afAuth.createUserWithEmailAndPassword(email, passwort)
             .then(async res => {
@@ -104,6 +105,7 @@ export class AuthService {
                     .subscribe(u => {
                         this.user = u;
                         this.isLoggedIn = true;
+                        done();
                     });
                 localStorage.setItem('userID', res.user.uid);
                 await this.router.navigate(['/home']);

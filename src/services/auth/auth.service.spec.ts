@@ -14,7 +14,7 @@ describe('AuthService', () => {
     let service: AuthService;
     let spy;
     const popoverSpy = jasmine.createSpyObj('PopoverController', ['dismiss']);
-    // const user = {uid: 'test', photoURL: 'test'};
+    const user = {user: {uid: 'test', photoURL: 'test'}};
     // const user = new User('lol', 'lol', 'lol');
     // const spy = jasmine.createSpyObj('AuthService', ['signUp', 'signIn', 'getUser', 'logOut']);
 
@@ -55,12 +55,11 @@ describe('AuthService', () => {
 
     describe('sign up', () => {
         it('should sign up', (done) => {
-            service.signUp('test', 'test@test.de', 'test')
-                .then(() => {
-                    console.log(service.user);
-                    expect(service.user.nutzername).toBe('test');
-                    done();
-                });
+            service.signUp('test', 'test@test.de', 'test', () => {
+                console.log(service.user);
+                expect(service.user.nutzername).toBe('test');
+                done();
+            });
         });
     });
     /*

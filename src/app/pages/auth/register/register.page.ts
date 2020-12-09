@@ -68,7 +68,7 @@ export class RegisterPage implements ViewDidEnter {
                 this.authService.isLoggedIn = true;
                 this.todoService.refreshTodos();
             }
-            await this.authService.signUp(nutzername, email, passwort);
+            await this.authService.signUp(nutzername, email, passwort, () => {});
             await this.storageService.importToFirebase(StorageServiceService.parsStringToObjectArray(this.authService.user.todos));
         }
     }
