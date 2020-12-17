@@ -3,7 +3,7 @@ import {IonicModule} from '@ionic/angular';
 
 import {RegisterPage} from './register.page';
 import {RouterTestingModule} from '@angular/router/testing';
-import {AngularFireModule} from "@angular/fire";
+import {AngularFireModule} from '@angular/fire';
 import {environment} from '../../../../environments/environment';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
 import {AngularFireAuth, AngularFireAuthModule} from '@angular/fire/auth';

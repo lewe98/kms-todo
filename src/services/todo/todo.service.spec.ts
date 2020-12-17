@@ -35,7 +35,7 @@ describe('TodoService', () => {
                 TodoService,
                 {provide: AuthService, useValue: authSpy},
                 // {provide: AlertController, useValue: alertSpy},
-                {provide: ModalController, useValue: modalSpy},]
+                {provide: ModalController, useValue: modalSpy}]
         }).compileComponents();
         service = TestBed.inject(TodoService);
     });
