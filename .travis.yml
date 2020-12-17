@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - 14
+  - 14.15.1
 
 addons:
   chrome: stable
@@ -17,3 +17,7 @@ script:
   - npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
   - npm run e2e -- --protractor-config=e2e/protractor-ci.conf.js
   - npm run build
+
+exclude:
+  directories:
+  - ./node_modules
