@@ -10,7 +10,7 @@ cache:
     - ./node_modules
 
 install:
-  - npm install -g ionic cordova
+  - npm i @ionic/cli
   - npm install
 
 script:
@@ -30,4 +30,4 @@ deploy:
     github_token: $GITHUB_TOKEN
     keep_history: true
     on:
-      branch: gh-pages
+      branch: dev
