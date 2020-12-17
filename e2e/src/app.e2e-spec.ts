@@ -7,8 +7,8 @@ describe('new App', () => {
     page = new AppPage();
   });
 
-  it('should be blank', () => {
+  it('should ', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toContain('Start with Ionic UI Components');
+    expect(page.getParagraphText()).toContain('Liste nach Kategorie filtern');
   });
 });

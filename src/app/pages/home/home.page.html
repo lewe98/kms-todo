@@ -61,14 +61,14 @@
                     </ion-label>
 
                     <ion-badge *ngIf="todo.kategorie.name != ''"
-                               (click)="todoService.presentPopoverCategory($event, todo)">{{todo.kategorie.name}}</ion-badge>
+                               (click)="presentPopoverCategory($event, todo)">{{todo.kategorie.name}}</ion-badge>
 
                     <ion-note slot="end">
                         <!-- {{todo.autor.nutzername}} -->
                         {{todo.zeit}} Uhr
                     </ion-note>
 
-                    <ion-badge slot="start" color="none" (click)="todoService.presentPopoverPriority($event, todo)">
+                    <ion-badge slot="start" color="none" (click)="presentPopoverPriority($event, todo)">
                         <img [src]=priority[todo.prioritaet] alt="prio icon">
                     </ion-badge>
                 </ion-item>

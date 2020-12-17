@@ -2,10 +2,8 @@ import {Injectable} from '@angular/core';
 import {Todo} from '../../models/todo';
 import {AlertController, LoadingController, ModalController, PopoverController} from '@ionic/angular';
 import {User} from '../../models/user';
-import {PopoverPriorityComponent} from '../../app/components/popover-priority/popover-priority.component';
 import {Kategorie} from '../../models/kategorie';
 import {StorageServiceService} from '../storage/storage-service.service';
-import {PopoverCategoryPage} from '../../app/components/popover-category/popover-category.page';
 
 
 @Injectable({
@@ -23,8 +21,7 @@ export class TodoService {
     searchInput = '';
     filterCat = '';
 
-    constructor(private modalCtrl: ModalController,
-                public popoverController: PopoverController,
+    constructor(public modalCtrl: ModalController,
                 public storageService: StorageServiceService,
                 public alertController: AlertController,
                 public loadingController: LoadingController) {
@@ -95,37 +92,6 @@ export class TodoService {
         } else {
             alert('Please enter a valid category name.');
         }
-    }
-
-    async presentPopoverPriority(ev: any, toto: Todo) {
-        const popover = await this.popoverController.create({
-            component: PopoverPriorityComponent,
-            event: ev,
-            translucent: true,
-            componentProps: {
-                toto
-            }
-        });
-        return await popover.present();
-    }
-
-    /**
-     * Method that calls the popover to display the elements of categories array
-     * to select an alternative category for a task
-     * @param ev that occurs when popover is called upon
-     * @param task is an instance of the todo class
-     * that is passed to the popover page
-     */
-    async presentPopoverCategory(ev: any, task: Todo) {
-        const popover = await this.popoverController.create({
-            component: PopoverCategoryPage,
-            event: ev,
-            translucent: true,
-            componentProps: {
-                task
-            }
-        });
-        return await popover.present();
     }
 
     /***

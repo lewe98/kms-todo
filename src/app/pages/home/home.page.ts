@@ -1,9 +1,11 @@
 import {Component, ViewChild} from '@angular/core';
-import {IonInput, LoadingController, ModalController, ViewDidEnter} from '@ionic/angular';
+import {IonInput, LoadingController, ModalController, PopoverController, ViewDidEnter} from '@ionic/angular';
 import {AddPage} from '../add/add.page';
 import {AuthService} from '../../../services/auth/auth.service';
 import {TodoService} from '../../../services/todo/todo.service';
 import {Todo} from '../../../models/todo';
+import {PopoverPriorityComponent} from '../../components/popover-priority/popover-priority.component';
+import {PopoverCategoryPage} from '../../components/popover-category/popover-category.page';
 
 @Component({
     selector: 'app-home',
@@ -25,6 +27,7 @@ export class HomePage implements ViewDidEnter {
 
     constructor(private modalCtrl: ModalController,
                 public loadingController: LoadingController,
+                public popoverController: PopoverController,
                 public todoService: TodoService,
                 public authService: AuthService) {
         if (!localStorage.getItem('userID')) {
@@ -95,6 +98,38 @@ export class HomePage implements ViewDidEnter {
                 return t.kategorie.name === catname;
             });
         }
+    }
+
+    async presentPopoverPriority(ev: any, toto: Todo) {
+        const popover = await this.popoverController.create({
+            component: PopoverPriorityComponent,
+            event: ev,
+            translucent: true,
+            componentProps: {
+                toto
+            }
+        });
+        return await popover.present();
+    }
+
+
+    /**
+     * Method that calls the popover to display the elements of categories array
+     * to select an alternative category for a task
+     * @param ev that occurs when popover is called upon
+     * @param task is an instance of the todo class
+     * that is passed to the popover page
+     */
+    async presentPopoverCategory(ev: any, task: Todo) {
+        const popover = await this.popoverController.create({
+            component: PopoverCategoryPage,
+            event: ev,
+            translucent: true,
+            componentProps: {
+                task
+            }
+        });
+        return await popover.present();
     }
 
     clear() {

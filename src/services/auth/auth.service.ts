@@ -7,7 +7,6 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {map} from 'rxjs/operators';
 import {LoadingController, PopoverController} from '@ionic/angular';
 import {LoginPage} from '../../app/pages/auth/login/login.page';
-import {TodoService} from '../todo/todo.service';
 
 @Injectable({
     providedIn: 'root'
@@ -95,9 +94,10 @@ export class AuthService {
      * @param nutzername user's username
      * @param email user's email
      * @param passwort user's password
+     * @param done() is a call back if user subUser is triggered
      */
-    async signUp(nutzername: string, email: string, passwort: string) {
-        await (await this.loading).present();
+    async signUp(nutzername: string, email: string, passwort: string, done: () => void) {
+        // await (await this.loading).present();
         await this.afAuth.createUserWithEmailAndPassword(email, passwort)
             .then(async res => {
                 this.persist(new User(email, nutzername, res.user.photoURL), res.user.uid);
@@ -105,6 +105,7 @@ export class AuthService {
                     .subscribe(u => {
                         this.user = u;
                         this.isLoggedIn = true;
+                        done();
                     });
                 localStorage.setItem('userID', res.user.uid);
                 await this.router.navigate(['/home']);
@@ -112,7 +113,7 @@ export class AuthService {
             .catch((error) => {
                 alert(error);
             });
-        await (await this.loading).onDidDismiss();
+        // await (await this.loading).onDidDismiss();
     }
 
     /**
