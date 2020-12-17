@@ -22,30 +22,15 @@ describe('TodoService', () => {
     if (minute.length === 1) {
         minute = '0' + minute;
     }
+    // Testdaten erstellen
+    const task: Todo = new Todo();
+    task.titel = 'testTitle';
+    task.beschreibung = 'testDescription';
+
     const authSpy = jasmine.createSpyObj('AuthService', ['signUp', 'signIn', 'getUser', 'logOut']);
+    const storageSpy = jasmine.createSpyObj('StorageService', {getTodos: 'getTodos'});
+    storageSpy.getTodos.and.returnValue([task]);
     const modalSpy = jasmine.createSpyObj('ModalController', ['dismiss']);
-    // const alertSpy = jasmine.createSpyObj('Alertcontroller', ['dismiss']);
-    // const loadingSpy = jasmine.createSpyObj('LoadingController');
-    // const popoverSpy = jasmine.createSpyObj('PopoverController', ['dismiss']);
-    // const todo: Todo = {
-    //     id: 0,
-    //     titel: 'Klopapier kaufen',
-    //     beschreibung: 'in Coronazeiten um Klopapier kämpfen',
-    //     kategorie: {id: 'nicht kategorisiert', name: 'nicht kategorisiert'},
-    //     autor: {
-    //         id: 'test',
-    //         email: 'test@test.de',
-    //         nutzername: 'test',
-    //         profilbild: 'test',
-    //         todos: [],
-    //         kategorien: [JSON.stringify(new Kategorie('0', 'nicht kategorisiert'))]
-    //     },
-    //     erledigt: false,
-    //     prioritaet: 2,
-    //     zeit: new Date().getHours() + ':' + minute,
-    // };
-
-
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -68,11 +53,9 @@ describe('TodoService', () => {
     });
 
     it('should should create a todo', function () {
-        const task: Todo = new Todo();
-        task.titel = 'testTitle';
-        task.beschreibung = 'testDescription';
         service.add(task, new User('test@test', 'test', 'test'), 'test');
-        expect(service.todos[0]).toBe(task);
+        const index: number = service.todos.indexOf(task);
+        expect(service.todos[index]).toBe(task);
     });
 
     it('should add a new category to categories array', function () {
@@ -84,16 +67,12 @@ describe('TodoService', () => {
     });
 
     it('should get a category by its name', function () {
-        const catname: string = 'testname';
-        const index: number = service.categories.length - 1;
-        service.addCategory(catname);
-        expect(service.getCatByName(catname)).toEqual({id : index.toString(), name: 'testname'});
+        const catname: string = 'testen';
+        const gotCat: Kategorie = service.getCatByName(catname);
+        expect(gotCat.name).toEqual(catname);
     });
 
     it('should set the priority of the given task', function () {
-        const task = new Todo();
-        task.titel = 'testTitle';
-        task.beschreibung = 'testDescription';
         service.add(task, new User('test@test', 'test', 'test'), 'test');
         const i = service.todos.indexOf(task);
         service.setPriority(task, 2);
@@ -101,9 +80,6 @@ describe('TodoService', () => {
     });
 
     it('should set the category for the given task', function () {
-        const task = new Todo();
-        task.titel = 'testTitle';
-        task.beschreibung = 'testDescription';
         const catID: string = service.categories.length.toString();
         const cat = new Kategorie(catID, 'testKategorie');
         service.setCategory(task, cat);
@@ -128,19 +104,19 @@ describe('TodoService', () => {
     });
 
     it('should  should set status of given task true', function () {
-        const task = new Todo();
-        task.titel = 'testTitle';
-        task.beschreibung = 'testDescription';
         service.done(task);
         expect(task.erledigt).toBe(true);
     });
 
     it('should shoud set status of given task to be false', function () {
-        const task = new Todo();
-        task.titel = 'testTitle';
-        task.beschreibung = 'testDescription';
         service.notDone(task);
         expect(task.erledigt).toBe(false);
     });
 
+    afterAll(() => {
+        service.filteredAufgabenArray = [];
+        service.todos = [];
+        service.categories = [];
+        service.catname = '';
+    });
 });
