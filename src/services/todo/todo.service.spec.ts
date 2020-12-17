@@ -2,10 +2,8 @@ import { TestBed } from '@angular/core/testing';
 
 import { TodoService } from './todo.service';
 import {RouterTestingModule} from '@angular/router/testing';
-// import {ModalController} from '@ionic/angular';
-import {StorageServiceService} from '../storage/storage-service.service';
 import {AuthService} from '../auth/auth.service';
-import {AlertController, LoadingController, ModalController} from '@ionic/angular';
+import {ModalController} from '@ionic/angular';
 import {Todo} from "../../models/todo";
 import {Kategorie} from "../../models/kategorie";
 import {AngularFireModule} from "@angular/fire";
@@ -13,17 +11,11 @@ import {environment} from "../../environments/environment";
 import {AngularFirestoreModule} from "@angular/fire/firestore";
 import {AngularFireAuthModule} from "@angular/fire/auth";
 import {User} from "../../models/user";
-import {formatNumber} from "@angular/common";
 
 describe('TodoService', () => {
     let service: TodoService;
     const authSpy = jasmine.createSpyObj('AuthService', ['signUp', 'signIn', 'getUser', 'logOut']);
     const modalSpy = jasmine.createSpyObj('ModalController', ['dismiss']);
-    let spy;
-    let minute = String(new Date().getMinutes());
-    if (minute.length === 1) {
-        minute = '0' + minute;
-    }
     // Testdaten erstellen
     const task: Todo = new Todo();
     task.titel = 'testTitle';
@@ -73,9 +65,7 @@ describe('TodoService', () => {
     });
 
     it('should delete a todo', () => {
-        const task: Todo = new Todo();
-        task.titel = 'testTitle';
-        task.beschreibung = 'testDescription';
+        service.todos = [];
         service.add(task, new User('test@test.de', 'test', 'test'), 'test');
         expect(service.todos.length).toBe(1);
         service.delete(task);
@@ -96,7 +86,6 @@ describe('TodoService', () => {
         const catname: string = 'testen';
         service.addCategory(catname);
         const index: number = service.categories.length - 1;
-        console.log(index);
         expect(service.categories[index]).toEqual({id : index.toString(), name: 'testen'});
     });
 
@@ -122,17 +111,12 @@ describe('TodoService', () => {
 
     it('should should delete a category', function () {
         const catname: string = 'testname';
-        const index: number = service.categories.length - 1;
         service.addCategory(catname);
         const testCat: Kategorie = service.getCatByName(catname);
         service.deleteCategorie(testCat);
         let foundCat: boolean;
         for (const cat of service.categories) {
-            if (cat === testCat) {
-                foundCat = true;
-            } else {
-                foundCat = false;
-            }
+            foundCat = cat === testCat;
         }
         expect(foundCat).toBeFalse();
     });

@@ -12,7 +12,7 @@ import {Kategorie} from '../../../models/kategorie';
 })
 export class AddPage {
 
-    @Input() todo: Todo;
+    @Input() todo: Todo = new Todo();
     @Input() autor: User;
     @Input() edit: boolean;
     @Input() category: Kategorie;
