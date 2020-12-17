@@ -21,7 +21,8 @@ export class StorageServiceService {
     static parsStringToObjectArray<T>(object: string[]): T[] {
         const back: T[] = [];
         object.map(e => {
-            back.push(JSON.parse(e));
+            const o: T = (JSON.parse(e) as T);
+            back.push(o);
         });
         return back;
     }
