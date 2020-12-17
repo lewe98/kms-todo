@@ -69,31 +69,6 @@ describe('AuthService', () => {
         });
     });
 
-    /*
-            describe('log in', () => {
-                it('should log in', (done) => {
-                    service.signIn('jasmine@karma.com', 'jasmine');
-                    expect(service.user.nutzername).toBe(typeof String);
-                    done();
-                });
-            });
-
-            describe('get user', () => {
-                it('should get user', (done) => {
-                    service.getUser();
-                    expect(service.user.nutzername).toBe(typeof String);
-                    done();
-                });
-            });
-
-            describe('log out', () => {
-                it('should log out', (done) => {
-                    service.logOut();
-                    expect(service.user.nutzername).toBe(typeof undefined);
-                    done();
-                });
-            });*/
-
 });
 
 

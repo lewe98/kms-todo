@@ -145,7 +145,6 @@ export class TodoService {
     }
 
     async done(todo: Todo) {
-        console.log(todo);
         todo.erledigt = true;
         this.storageService.updateTodo(todo);
         this.refreshTodos();
