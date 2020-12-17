@@ -11,8 +11,7 @@
     "lint": "ng lint",
     "test": "ng test --no-watch --no-progress --browsers=ChromeHeadlessCI",
     "e2e": "ng e2e --protractor-config=e2e/protractor-ci.conf.js",
-    "coverage": "ng test --no-watch --code-coverage",
-    "deploy": "ionic build --prod -- --base-href https://lewe98.github.io/kms-todo/ && npx angular-cli-ghpages --dir=www"
+    "coverage": "ng test --no-watch --code-coverage"
   },
   "private": true,
   "dependencies": {

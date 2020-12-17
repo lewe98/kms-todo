@@ -17,16 +17,16 @@ script:
   - npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
   - npm run e2e -- --protractor-config=e2e/protractor-ci.conf.js
   - npm run build
-  - npm run deploy
+  - ionic build --prod -- --base-href https://lewe98.github.io/kms-todo/
 
 #exclude:
 #  directories:
 #    - ./node_modules
 
-#deploy:
-#  - provider: pages
-#    skip_cleanup: true
-#    github_token: $GITHUB_TOKEN   # Set in the settings page of your repository, as a secure variable
-#    keep_history: true
-#    on:
-#      branch: dev
+deploy:
+  - provider: pages
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    keep_history: true
+    on:
+      branch: gh-pages
