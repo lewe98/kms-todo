@@ -14,6 +14,7 @@ import {AngularFirestoreModule} from '@angular/fire/firestore';
 import {AngularFireAuthModule} from '@angular/fire/auth';
 import {environment} from '../environments/environment';
 import {PopoverPriorityComponent} from './components/popover-priority/popover-priority.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     declarations: [AppComponent, PopoverPriorityComponent],
@@ -24,7 +25,8 @@ import {PopoverPriorityComponent} from './components/popover-priority/popover-pr
         AppRoutingModule,
         AngularFireModule.initializeApp(environment.firebaseConfig),
         AngularFirestoreModule,
-        AngularFireAuthModule
+        AngularFireAuthModule,
+        FormsModule
     ],
     providers: [
         StatusBar,
