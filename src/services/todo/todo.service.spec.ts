@@ -1,6 +1,6 @@
-import {TestBed} from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
-import {TodoService} from './todo.service';
+import { TodoService } from './todo.service';
 import {RouterTestingModule} from '@angular/router/testing';
 // import {ModalController} from '@ionic/angular';
 import {StorageServiceService} from '../storage/storage-service.service';
@@ -17,6 +17,8 @@ import {formatNumber} from "@angular/common";
 
 describe('TodoService', () => {
     let service: TodoService;
+    const authSpy = jasmine.createSpyObj('AuthService', ['signUp', 'signIn', 'getUser', 'logOut']);
+    const modalSpy = jasmine.createSpyObj('ModalController', ['dismiss']);
     let spy;
     let minute = String(new Date().getMinutes());
     if (minute.length === 1) {
@@ -27,10 +29,8 @@ describe('TodoService', () => {
     task.titel = 'testTitle';
     task.beschreibung = 'testDescription';
 
-    const authSpy = jasmine.createSpyObj('AuthService', ['signUp', 'signIn', 'getUser', 'logOut']);
     const storageSpy = jasmine.createSpyObj('StorageService', {getTodos: 'getTodos'});
     storageSpy.getTodos.and.returnValue([task]);
-    const modalSpy = jasmine.createSpyObj('ModalController', ['dismiss']);
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -46,6 +46,40 @@ describe('TodoService', () => {
                 {provide: ModalController, useValue: modalSpy},]
         }).compileComponents();
         service = TestBed.inject(TodoService);
+    });
+
+    it('should be created', () => {
+        expect(service).toBeTruthy();
+    });
+
+    it('should update the category of a todo', () => {
+        const task: Todo = new Todo();
+        const oldCategorie = new Kategorie('oldVal', 'oldVal');
+        const newCategorie = new Kategorie('newVal', 'newVal');
+
+        task.kategorie = oldCategorie;
+        service.setCategory(task, newCategorie);
+
+        expect(task.kategorie).toBe(newCategorie);
+    });
+
+    // todo
+    it('should update a todo', () => {
+        const task: Todo = new Todo();
+        task.id = 0;
+        task.id = 1;
+        service.edit(task);
+        expect(task.id).toBe(1);
+    });
+
+    it('should delete a todo', () => {
+        const task: Todo = new Todo();
+        task.titel = 'testTitle';
+        task.beschreibung = 'testDescription';
+        service.add(task, new User('test@test.de', 'test', 'test'), 'test');
+        expect(service.todos.length).toBe(1);
+        service.delete(task);
+        expect(service.todos.length).toBe(0);
     });
 
     it('should be created', () => {
