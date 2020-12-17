@@ -10,7 +10,7 @@ cache:
     - ./node_modules
 
 install:
-  - npm install -g ionic cordova
+  - npm i @ionic/cli
   - npm install
 
 script:
