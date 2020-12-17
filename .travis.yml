@@ -10,6 +10,7 @@ cache:
     - ./node_modules
 
 install:
+  - npm install -g ionic cordova
   - npm install
 
 script:
@@ -17,7 +18,7 @@ script:
   - npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
   - npm run e2e -- --protractor-config=e2e/protractor-ci.conf.js
   - npm run build
-  - npm run gh-pages
+  - ionic build --prod -- --base-href https://lewe98.github.io/kms-todo/
 
 #exclude:
 #  directories:
