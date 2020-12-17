@@ -2,8 +2,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { AddPage } from './add.page';
-import {RouterTestingModule} from "@angular/router/testing";
-import {AuthService} from "../../../services/auth/auth.service";
+import {RouterTestingModule} from '@angular/router/testing';
+import {AuthService} from '../../../services/auth/auth.service';
+import { FormsModule } from '@angular/forms';
 
 describe('AddPage', () => {
   let component: AddPage;
@@ -14,7 +15,7 @@ describe('AddPage', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ AddPage ],
-      imports: [IonicModule.forRoot(), RouterTestingModule],
+      imports: [IonicModule.forRoot(), RouterTestingModule, FormsModule],
       providers: [
         {provide: AuthService, useValue: authSpy},
       ]
@@ -28,4 +29,5 @@ describe('AddPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
 });

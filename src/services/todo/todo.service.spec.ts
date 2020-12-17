@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { TodoService } from './todo.service';
+import {TodoService} from './todo.service';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AuthService} from '../auth/auth.service';
 import {ModalController} from '@ionic/angular';
-import {Todo} from "../../models/todo";
-import {Kategorie} from "../../models/kategorie";
-import {AngularFireModule} from "@angular/fire";
-import {environment} from "../../environments/environment";
-import {AngularFirestoreModule} from "@angular/fire/firestore";
-import {AngularFireAuthModule} from "@angular/fire/auth";
-import {User} from "../../models/user";
+import {Todo} from '../../models/todo';
+import {Kategorie} from '../../models/kategorie';
+import {AngularFireModule} from '@angular/fire';
+import {environment} from '../../environments/environment';
+import {AngularFirestoreModule} from '@angular/fire/firestore';
+import {AngularFireAuthModule} from '@angular/fire/auth';
+import {User} from '../../models/user';
 
 describe('TodoService', () => {
     let service: TodoService;
@@ -45,7 +45,6 @@ describe('TodoService', () => {
     });
 
     it('should update the category of a todo', () => {
-        const task: Todo = new Todo();
         const oldCategorie = new Kategorie('oldVal', 'oldVal');
         const newCategorie = new Kategorie('newVal', 'newVal');
 
@@ -57,7 +56,6 @@ describe('TodoService', () => {
 
     // todo
     it('should update a todo', () => {
-        const task: Todo = new Todo();
         task.id = 0;
         task.id = 1;
         service.edit(task);
@@ -76,41 +74,41 @@ describe('TodoService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('should should create a todo', function () {
+    it('should should create a todo', () => {
         service.add(task, new User('test@test', 'test', 'test'), 'test');
         const index: number = service.todos.indexOf(task);
         expect(service.todos[index]).toBe(task);
     });
 
-    it('should add a new category to categories array', function () {
-        const catname: string = 'testen';
+    it('should add a new category to categories array', () => {
+        const catname = 'testen';
         service.addCategory(catname);
         const index: number = service.categories.length - 1;
-        expect(service.categories[index]).toEqual({id : index.toString(), name: 'testen'});
+        expect(service.categories[index]).toEqual({id: index.toString(), name: 'testen'});
     });
 
-    it('should get a category by its name', function () {
-        const catname: string = 'testen';
+    it('should get a category by its name', () => {
+        const catname = 'testen';
         const gotCat: Kategorie = service.getCatByName(catname);
         expect(gotCat.name).toEqual(catname);
     });
 
-    it('should set the priority of the given task', function () {
+    it('should set the priority of the given task', () => {
         service.add(task, new User('test@test', 'test', 'test'), 'test');
         const i = service.todos.indexOf(task);
         service.setPriority(task, 2);
         expect(service.todos[i]).toEqual(task);
     });
 
-    it('should set the category for the given task', function () {
-        const catID: string = service.categories.length.toString();
+    it('should set the category for the given task', () => {
+        const catID = service.categories.length.toString();
         const cat = new Kategorie(catID, 'testKategorie');
         service.setCategory(task, cat);
         expect(task.kategorie).toEqual(cat);
     });
 
-    it('should should delete a category', function () {
-        const catname: string = 'testname';
+    it('should should delete a category', () => {
+        const catname = 'testname';
         service.addCategory(catname);
         const testCat: Kategorie = service.getCatByName(catname);
         service.deleteCategorie(testCat);
@@ -121,12 +119,12 @@ describe('TodoService', () => {
         expect(foundCat).toBeFalse();
     });
 
-    it('should  should set status of given task true', function () {
+    it('should  should set status of given task true', () => {
         service.done(task);
         expect(task.erledigt).toBe(true);
     });
 
-    it('should shoud set status of given task to be false', function () {
+    it('should shoud set status of given task to be false', () => {
         service.notDone(task);
         expect(task.erledigt).toBe(false);
     });
