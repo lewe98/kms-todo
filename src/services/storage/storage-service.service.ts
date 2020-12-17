@@ -22,7 +22,8 @@ export class StorageServiceService {
         const back: T[] = [];
         object.map(e => {
             const o: T = (JSON.parse(e) as T);
-            back.push(o);
+            const tmp: T = o;
+            back.push(tmp);
         });
         return back;
     }
