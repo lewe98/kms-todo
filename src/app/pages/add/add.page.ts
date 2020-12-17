@@ -18,7 +18,7 @@ export class AddPage {
     @Input() category: Kategorie;
     @Input() name: string;
 
-    private picked = 'todo';
+    picked = 'todo';
 
 
     constructor(public todoService: TodoService,
@@ -27,7 +27,7 @@ export class AddPage {
 
     /**
      *
-     * @param $event that is triggered when the segement of the button switches sides
+     * @param ev that is triggered when the segement of the button switches sides
      */
     segmentChanged(ev: any) {
         console.log('Segment changed', ev);

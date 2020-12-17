@@ -10,6 +10,7 @@ cache:
     - ./node_modules
 
 install:
+  - npm install -g ionic cordova
   - npm install
 
 script:
@@ -17,15 +18,16 @@ script:
   - npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
   - npm run e2e -- --protractor-config=e2e/protractor-ci.conf.js
   - npm run build
+  - ionic build --prod -- --base-href https://lewe98.github.io/kms-todo/
 
-exclude:
-  directories:
-    - ./node_modules
+#exclude:
+#  directories:
+#    - ./node_modules
 
 deploy:
   - provider: pages
     skip_cleanup: true
-    github_token: $GITHUB_TOKEN   # Set in the settings page of your repository, as a secure variable
+    github_token: $GITHUB_TOKEN
     keep_history: true
     on:
-      branch: dev
+      branch: gh-pages
