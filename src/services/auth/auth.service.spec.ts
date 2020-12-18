@@ -7,8 +7,6 @@ import {environment} from '../../environments/environment';
 import {PopoverController} from '@ionic/angular';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
 import {AngularFireAuth, AngularFireAuthModule} from '@angular/fire/auth';
-import firebase from 'firebase';
-import User = firebase.User;
 
 describe('AuthService', () => {
     let service: AuthService;
