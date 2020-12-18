@@ -1,4 +1,10 @@
-fail_on_violations: true
+fail_on_violations: false
+
+scss:
+  enabled: true
+
+jshint:
+  enabled: true
 
 eslint:
   enabled: true
@@ -6,9 +12,4 @@ eslint:
 tslint:
   enabled: true
 
-scss:
-  enabled: true
-
-jshint:
-  enabled: true
 
