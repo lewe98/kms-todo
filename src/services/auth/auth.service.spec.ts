@@ -6,11 +6,11 @@ import {AngularFireModule} from '@angular/fire';
 import {environment} from '../../environments/environment';
 import {PopoverController} from '@ionic/angular';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
-import {AngularFireAuth, AngularFireAuthModule} from "@angular/fire/auth";
+import {AngularFireAuth, AngularFireAuthModule} from '@angular/fire/auth';
 import firebase from 'firebase';
 import User = firebase.User;
 
-describe('AuthService', ()=> {
+describe('AuthService', () => {
     let service: AuthService;
     let spy;
     const popoverSpy = jasmine.createSpyObj('PopoverController', ['dismiss']);
