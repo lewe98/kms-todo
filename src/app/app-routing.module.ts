@@ -27,16 +27,16 @@ const routes: Routes = [
         path: 'add',
         loadChildren: () => import('./pages/add/add.module').then(m => m.AddPageModule)
     },
-  {
-    path: 'popover-category',
-    loadChildren: () => import('./components/popover-category/popover-category.module').then( m => m.PopoverCategoryPageModule)
-  }
+    {
+        path: 'popover-category',
+        loadChildren: () => import('./components/popover-category/popover-category.module').then(m => m.PopoverCategoryPageModule)
+    }
 
 ];
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules})
+        RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules, useHash: true})
     ],
     exports: [RouterModule]
 })
