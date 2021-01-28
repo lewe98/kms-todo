@@ -8,3 +8,4 @@
 To install the dependencies, run ``npm i``. 
 
 To start the app, run ``npm run ion`` in the root folder.
+
